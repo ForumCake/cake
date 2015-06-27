@@ -24,33 +24,93 @@ class Install_Controller
         
         $namespace = str_replace('_', '\\', $addOnData['addon_id']);
         
-        self::_install($namespace);
+        self::_install($namespace, $existingAddOn, $addOnData, $xml);
     }
 
-    protected static function _install($namespace)
+    protected static function _install($namespace, $existingAddOn, array $addOnData, \SimpleXMLElement $xml)
     {
-        $data = Install_DataAbstract::create($namespace . '\Install_Data');
+        $db = \XenForo_Application::getDb();
         
-        if ($data) {
-            $tables = $data->getTables();
+        $installData = Install_DataAbstract::create($namespace . '\Install_Data');
+        
+        /* @var $addOnModel \XenForo_Model_AddOn */
+        $addOnModel = \XenForo_Model::create('XenForo_Model_AddOn');
+        
+        if ($installData) {
+            $installData->install();
             
-            if ($tables) {
-                \Cake\Helper_MySql::createTables($tables);
-            }
+            $addOnId = $addOnData['addon_id'];
+            $addOnNamespace = str_replace('_', '\\', $addOnId);
+            $moduleName = substr($namespace, strlen($addOnNamespace) + 1);
             
-            $tableChanges = $data->getTableChanges();
-            
-            if ($tableChanges) {
-                \Cake\Helper_MySql::makeTableChanges($tableChanges);
-            }
-            
-            $modules = $data->getModules();
-            
-            foreach ($modules as $moduleNamespace => $enabled) {
-                if ($enabled) {
-                    self::_install($namespace . '\\' . $moduleNamespace);
+            if ($moduleName) {
+                $installData->installModule($addOnId, $moduleName);
+            } else {
+                // TODO allow modules inside modules?
+                
+                if ($existingAddOn) {
+                    $installedModules = $addOnModel->getInstalledModulesForAddOn($addOnId);
+                }
+                
+                $modules = $installData->getModules();
+                
+                foreach ($modules as $moduleName => $enabled) {
+                    if ($existingAddOn) {
+                        if (!isset($installedModules[$moduleName])) {
+                            continue;
+                        }
+                    }
+                    if ($enabled) {
+                        self::_install($namespace . '\\' . $moduleName, $existingAddOn, $addOnData, $xml);
+                    }
                 }
             }
+        }
+    }
+
+    /**
+     *
+     * @param array|boolean $existingAddOn
+     * @param array $addOnData
+     * @param \SimpleXMLElement $xml
+     */
+    public static function uninstall(array $addOnData)
+    {
+        $namespace = str_replace('_', '\\', $addOnData['addon_id']);
+        
+        self::_uninstall($namespace, $addOnData);
+    }
+
+    protected static function _uninstall($namespace, array $addOnData)
+    {
+        $db = \XenForo_Application::getDb();
+        
+        $installData = Install_DataAbstract::create($namespace . '\Install_Data');
+        
+        /* @var $addOnModel \XenForo_Model_AddOn */
+        $addOnModel = \XenForo_Model::create('XenForo_Model_AddOn');
+        
+        if ($installData) {
+            $addOnId = $addOnData['addon_id'];
+            $addOnNamespace = str_replace('_', '\\', $addOnId);
+            $moduleName = substr($namespace, strlen($addOnNamespace) + 1);
+            
+            if (!$moduleName) {
+                // TODO allow modules inside modules?
+                
+                $installedModules = $addOnModel->getInstalledModulesForAddOn($addOnId);
+                
+                $modules = $installData->getModules();
+                
+                foreach ($modules as $moduleName => $enabled) {
+                    if (!isset($installedModules[$moduleName])) {
+                        continue;
+                    }
+                    self::_uninstall($namespace . '\\' . $moduleName, $addOnData);
+                }
+            }
+            
+            $installData->uninstall();
         }
     }
 }

@@ -22,7 +22,8 @@ trait Trait_Core
 
     public function getModelFromCache($class)
     {
-        if (strpos($class, '_') === false || (strlen($class) > 5 && substr($class, 6) == 'Model_')) {
+        if ((strpos($class, '\\') === false && strpos($class, '_') === false) ||
+             (strlen($class) > 5 && substr($class, 6) == 'Model_')) {
             $calledClass = get_called_class();
             
             $backslash = strrpos($calledClass, '\\');
@@ -48,5 +49,38 @@ trait Trait_Core
         }
         
         return \XenForo_DataWriter::create($class);
+    }
+
+    public function isModuleActive($module)
+    {
+        $calledClass = get_called_class();
+        
+        $backslash = strrpos($calledClass, '\\');
+        if ($backslash !== false) {
+            $namespace = substr($calledClass, 0, $backslash);
+            
+            $namespaceParts = explode('\\', $namespace);
+            $addOns = \XenForo_Application::get('addOns');
+            
+            $addOnId = '';
+            while ($namespaceParts) {
+                $_addOnId = implode('_', $namespaceParts);
+                if (isset($addOns[$_addOnId])) {
+                    $addOnId = $_addOnId;
+                    break;
+                }
+                array_pop($namespaceParts);
+            }
+            
+            if ($addOnId) {
+                $activeModules = \Cake\Proxy::getOptionValue('modules', $addOnId);
+                
+                if ($module && !empty($activeModules[$module])) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 }

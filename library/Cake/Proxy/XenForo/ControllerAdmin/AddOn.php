@@ -28,9 +28,9 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
     {
         $addOnId = $this->_input->filterSingle('addon_id', \XenForo_Input::STRING);
         
+        $addOnModel = $this->_getAddOnModel();
+        
         if (!$addOnId) {
-            $addOnModel = $this->_getAddOnModel();
-            
             $addOns = $addOnModel->getAllAddOns();
             $addOns = $this->_getAddOnModel()->prepareCakeAddOns($addOns);
             
@@ -50,23 +50,136 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
             $modules = $installData->getModules();
         }
         
+        $installedModules = $addOnModel->getInstalledModulesForAddOn($addOnId);
         $activeModules = Proxy::getOptionValue('modules', $addOnId);
         
+        $availableModules = array();
         foreach ($modules as $moduleName => $default) {
-            $modules[$moduleName] = array(
+            $installed = isset($installedModules[$moduleName]);
+            $module = array(
                 'title' => new \XenForo_Phrase(\Cake\Helper_String::pascalCaseToCamelCase($addOnId . '_' . $moduleName)),
                 'description' => new \XenForo_Phrase(
                     \Cake\Helper_String::pascalCaseToCamelCase($addOnId . '_' . $moduleName) . '_desc'),
                 'active' => !empty($activeModules[$moduleName])
             );
+            if ($installed) {
+                $installedModules[$moduleName] = $module;
+            } else {
+                $availableModules[$moduleName] = $module;
+            }
         }
         
         $viewParams = array(
             'addOn' => $addOn,
-            'modules' => $modules
+            'installedModules' => $installedModules,
+            'availableModules' => $availableModules
         );
         
         return $this->responseView('Cake\ViewAdmin_AddOn_Modules', 'cake_addon_modules', $viewParams);
+    }
+
+    public function actionModulesinstall()
+    {
+        $addOnId = $this->_input->filterSingle('addon_id', \XenForo_Input::STRING);
+        
+        $addOn = $this->_getAddOnOrError($addOnId);
+        
+        $moduleName = $this->_input->filterSingle('module_name', \XenForo_Input::STRING);
+        
+        if ($this->isConfirmedPost()) {
+            $installData = \Cake\Install_DataAbstract::createForAddOnId($addOnId);
+            
+            $modules = array();
+            if ($installData) {
+                $modules = $installData->getModules();
+            }
+            
+            if (!isset($modules[$moduleName])) {
+                // TODO friendly error
+                return $this->responseNoPermission();
+            }
+            
+            $addOnModel = $this->_getAddOnModel();
+            
+            $installedModules = $addOnModel->getInstalledModulesForAddOn($addOnId);
+            
+            if (isset($installedModules[$moduleName])) {
+                // TODO friendly error
+                return $this->responseNoPermission();
+            }
+            
+            $addOnModel->installModule($addOn, $moduleName);
+            
+            return $this->responseRedirect(\XenForo_ControllerResponse_Redirect::SUCCESS, 
+                \XenForo_Link::buildAdminLink('add-ons/modules', 
+                    array(
+                        'addon_id' => $addOnId
+                    )));
+        } else {
+            $module = array(
+                'module_name' => $moduleName,
+                'title' => new \XenForo_Phrase(\Cake\Helper_String::pascalCaseToCamelCase($addOnId . '_' . $moduleName))
+            );
+            
+            $viewParams = array(
+                'addOn' => $addOn,
+                'module' => $module
+            );
+            
+            return $this->responseView('ViewAdmin_AddOn_Modules_Install', 'cake_module_install', $viewParams);
+        }
+    }
+    
+    public function actionModulesuninstall()
+    {
+        $addOnId = $this->_input->filterSingle('addon_id', \XenForo_Input::STRING);
+    
+        $addOn = $this->_getAddOnOrError($addOnId);
+    
+        $moduleName = $this->_input->filterSingle('module_name', \XenForo_Input::STRING);
+    
+        if ($this->isConfirmedPost()) {
+            $installData = \Cake\Install_DataAbstract::createForAddOnId($addOnId);
+    
+            $modules = array();
+            if ($installData) {
+                $modules = $installData->getModules();
+            }
+    
+            if (!isset($modules[$moduleName])) {
+                // TODO friendly error
+                return $this->responseNoPermission();
+            }
+    
+            $addOnModel = $this->_getAddOnModel();
+    
+            $installedModules = $addOnModel->getInstalledModulesForAddOn($addOnId);
+    
+            if (!isset($installedModules[$moduleName])) {
+                // TODO friendly error
+                return $this->responseNoPermission();
+            }
+    
+            $addOnModel->uninstallModule($addOn, $moduleName);
+    
+            return $this->responseRedirect(\XenForo_ControllerResponse_Redirect::SUCCESS,
+                \XenForo_Link::buildAdminLink('add-ons/modules',
+                    array(
+                        'addon_id' => $addOnId
+                    )));
+        } else {
+            $module = array(
+                'module_name' => $moduleName,
+                'title' => new \XenForo_Phrase(\Cake\Helper_String::pascalCaseToCamelCase($addOnId . '_' . $moduleName))
+            );
+    
+            $viewParams = array(
+                'addOn' => $addOn,
+                'module' => $module
+            );
+    
+            return $this->responseView('ViewAdmin_AddOn_Modules_Uninstall', 'cake_module_uninstall', $viewParams);
+        }
     }
 
     public function actionModulesreset()
@@ -74,8 +187,7 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
         $addOnId = $this->_input->filterSingle('addon_id', \XenForo_Input::STRING);
         $addOn = $this->_getAddOnOrError($addOnId);
         
-        if ($this->isConfirmedPost()) // delete add-on
-{
+        if ($this->isConfirmedPost()) {
             $dw = \XenForo_DataWriter::create('XenForo_Datawriter_Option');
             $preOption = \Cake\Helper_String::pascalCaseToCamelCase($addOnId);
             $dw->setExistingData($preOption . '_modules');

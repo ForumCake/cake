@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="Cake" title="Cake" version_string="1.0.0 Alpha 2" version_id="1000031" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="" uninstall_callback_method="">
+<addon addon_id="Cake" title="Cake" version_string="1.0.0 Alpha 3" version_id="1000032" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="Cake\Install_Controller" uninstall_callback_method="uninstall">
   <admin_navigation>
-    <navigation navigation_id="addOnModules" parent_navigation_id="addOns" display_order="15" link="add-ons/modules" admin_permission_id="addOn" debug_only="0" hide_no_children="0" module_name_cake=""/>
+    <navigation navigation_id="addOnModules" parent_navigation_id="addOns" display_order="15" link="add-ons/modules" admin_permission_id="addOn" debug_only="0" hide_no_children="0"/>
   </admin_navigation>
   <admin_permissions/>
   <admin_style_properties/>
@@ -31,32 +31,56 @@
 <xen:require css="filter_list.css" />
 <xen:require js="js/xenforo/filter_list.js" />
 
-<xen:form action="{xen:adminlink add-ons/modules-toggle, $addOn}" class="section AutoValidator">
+<xen:if is="{$installedModules} || {$availableModules}">
+	<xen:if is="{$installedModules}">
+		<xen:form action="{xen:adminlink add-ons/modules-toggle, $addOn}" class="section AutoValidator">
+			<h2 class="subHeading">
+				<xen:include template="filter_list_controls" />
+				{xen:phrase cake_installed_modules}
+			</h2>
+	
+			<ol class="FilterList">
+				<xen:foreach loop="$installedModules" key="$moduleName" value="$module">
+					<xen:listitem id="{$moduleName}"
+						label="{$module.title}"
+						snippet="{$module.description}"
+						toggle="{$module.active}"
+						toggletitle="{xen:phrase enable_disable_x, 'title={$moduleName}'}">
+						<xen:html>
+							<a href="{xen:adminlink 'add-ons/modules/uninstall', $addOn, 'module_name={$moduleName}'}" class="secondaryContent OverlayTrigger">{xen:phrase uninstall}</a>
+						</xen:html>
+					</xen:listitem>
+				</xen:foreach>
+			</ol>
+	
+			<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $installedModules}</span>', 'total={xen:count $installedModules}'}</p>
+		</xen:form>
+	</xen:if>
 
-	<xen:if is="{$modules}">
+	<xen:if is="{$availableModules}">
 		<h2 class="subHeading">
 			<xen:include template="filter_list_controls" />
-			{xen:phrase cake_modules}
+			{xen:phrase cake_available_modules}
 		</h2>
 
 		<ol class="FilterList">
-			<xen:foreach loop="$modules" key="$moduleName" value="$module">
+			<xen:foreach loop="$availableModules" key="$moduleName" value="$module">
 				<xen:listitem id="{$moduleName}"
 					label="{$module.title}"
-					snippet="{$module.description}"
-					toggle="{$module.active}"
-					toggletitle="{xen:phrase enable_disable_x, 'title={$moduleName}'}">
+					snippet="{$module.description}">
+					<xen:html>
+						<a href="{xen:adminlink 'add-ons/modules/install', $addOn, 'module_name={$moduleName}'}" class="secondaryContent OverlayTrigger">{xen:phrase cake_install}</a>
+					</xen:html>
 				</xen:listitem>
 			</xen:foreach>
 		</ol>
 
-		<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $modules}</span>', 'total={xen:count $modules}'}</p>
-
-	<xen:else />
-		<div class="noResults">{xen:phrase cake_this_add_on_has_no_modules}</div>
+		<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $availableModules}</span>', 'total={xen:count $availableModules}'}</p>
 	</xen:if>
-	
-</xen:form>]]></template>
+
+<xen:else />
+	<div class="noResults">{xen:phrase cake_this_add_on_has_no_modules}</div>
+</xen:if>]]></template>
     <template title="cake_addon_modules_list"><![CDATA[<xen:title>{xen:phrase cake_modules}</xen:title>
 
 <xen:require css="filter_list.css" />
@@ -100,6 +124,40 @@
 
 	<xen:submitunit save="{xen:phrase cake_revert_to_default}" />
 	
+	<input type="hidden" name="_xfConfirm" value="1" />
+</xen:form>]]></template>
+    <template title="cake_module_install"><![CDATA[<xen:title>{xen:phrase cake_confirm_installation_of_module}: {$customPrivacyError.title}</xen:title>
+<xen:h1>{xen:phrase cake_confirm_installation_of_module}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink 'add-ons/modules', $addOn}">{$addOn.title}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="delete_confirmation.css" />
+
+<xen:form action="{xen:adminlink 'add-ons/modules/install', $addOn, 'module_name={$module.module_name}'}" class="deleteConfirmForm">
+	<p>{xen:phrase cake_please_confirm_install_following_module}:</p>
+	<strong>{$module.title}</strong>
+	
+	<xen:submitunit save="{xen:phrase cake_install_module}" />
+
+	<input type="hidden" name="_xfConfirm" value="1" />
+</xen:form>]]></template>
+    <template title="cake_module_uninstall"><![CDATA[<xen:title>{xen:phrase cake_confirm_uninstallation_of_module}: {$customPrivacyError.title}</xen:title>
+<xen:h1>{xen:phrase cake_confirm_uninstallation_of_module}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink 'add-ons/modules', $addOn}">{$addOn.title}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="delete_confirmation.css" />
+
+<xen:form action="{xen:adminlink 'add-ons/modules/uninstall', $addOn, 'module_name={$module.module_name}'}" class="deleteConfirmForm">
+	<p>{xen:phrase cake_please_confirm_uninstall_following_module}:</p>
+	<strong>{$module.title}</strong>
+	
+	<xen:submitunit save="{xen:phrase cake_uninstall_module}" />
+
 	<input type="hidden" name="_xfConfirm" value="1" />
 </xen:form>]]></template>
     <template title="cake_option_list"><![CDATA[<xen:if hascontent="true">
@@ -237,12 +295,21 @@ ${0}]]></replace>
     <phrase title="admin_navigation_addOnModules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Enable/Disable Modules]]></phrase>
     <phrase title="cake" version_id="1000030" version_string="1.0.0 Alpha 1"><![CDATA[Cake]]></phrase>
     <phrase title="cake_add_ons_with_modules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Add-ons with Modules]]></phrase>
+    <phrase title="cake_available_modules" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Available Modules]]></phrase>
+    <phrase title="cake_confirm_installation_of_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Confirm Installation of Module]]></phrase>
     <phrase title="cake_confirm_revert_to_default" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Confirm Revert to Default]]></phrase>
+    <phrase title="cake_confirm_uninstallation_of_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Confirm Uninstallation of Module]]></phrase>
+    <phrase title="cake_install" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Install]]></phrase>
+    <phrase title="cake_installed_modules" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Installed Modules]]></phrase>
+    <phrase title="cake_install_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Install Module]]></phrase>
     <phrase title="cake_modules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Modules]]></phrase>
+    <phrase title="cake_please_confirm_install_following_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Please confirm you want to install the following module]]></phrase>
     <phrase title="cake_please_confirm_that_you_want_to_revert_to_default_enabled_modules_for_add_on" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Please confirm that you want to revert to the the default enabled modules for add-on:]]></phrase>
+    <phrase title="cake_please_confirm_uninstall_following_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Please confirm you want to uninstall the following module]]></phrase>
     <phrase title="cake_revert_to_default" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Revert to Default]]></phrase>
     <phrase title="cake_set_as_default" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Set as Default]]></phrase>
     <phrase title="cake_this_add_on_has_no_modules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[This add-on has no modules.]]></phrase>
+    <phrase title="cake_uninstall_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Uninstall Module]]></phrase>
     <phrase title="cake_x_of_y_modules_active" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[{active} of {total} modules active]]></phrase>
     <phrase title="option_group_cake" version_id="1000030" version_string="1.0.0 Alpha 1"><![CDATA[Cake Options]]></phrase>
     <phrase title="option_group_cake_description" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Options for all Cake add-ons and modules.]]></phrase>

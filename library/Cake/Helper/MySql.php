@@ -38,13 +38,30 @@ class Helper_MySql
 
     /**
      *
+     * @param array $tables
+     */
+    public static function dropTables(array $tables)
+    {
+        $db = \XenForo_Application::getDb();
+        
+        foreach ($tables as $tableName => $rows) {
+            $sql = "DROP TABLE IF EXISTS `" . $tableName . "` ";
+            $db->query($sql);
+            if (self::$_tablesList && in_array($tableName, self::$_tablesList)) {
+                unset(self::$_tablesList[array_search($tableName, self::$_tablesList)]);
+            }
+        }
+    }
+
+    /**
+     *
      * @param array $tableChanges
      */
     public static function makeTableChanges(array $tableChanges)
     {
         $db = \XenForo_Application::getDb();
         
-        $droppedTableChanges = array();
+        $undoTableChanges = array();
         foreach ($tableChanges as $tableName => $rows) {
             if (self::isTableExists($tableName)) {
                 $describeTable = $db->describeTable($tableName);
@@ -53,7 +70,7 @@ class Helper_MySql
                 $sqlAdd = array();
                 foreach ($rows as $rowName => $rowParams) {
                     if (!$rowParams) {
-                        $droppedTableChanges[$tableName][$rowName] = '';
+                        $undoTableChanges[$tableName][$rowName] = '';
                         continue;
                     }
                     if (!empty($describeTable[$rowName])) {
@@ -80,14 +97,14 @@ class Helper_MySql
                 }
             }
         }
-        self::dropTableChanges($droppedTableChanges);
+        self::undoTableChanges($undoTableChanges);
     }
 
     /**
      *
      * @param array $tableChanges
      */
-    public static function dropTableChanges(array $tableChanges)
+    public static function undoTableChanges(array $tableChanges)
     {
         $db = \XenForo_Application::getDb();
         
@@ -122,6 +139,22 @@ class Helper_MySql
             }
         }
         return $primaryKeys;
+    }
+
+    public static function addPrimaryKeys(array $primaryKeys)
+    {
+        $db = \XenForo_Application::getDb();
+        
+        foreach ($primaryKeys as $tableName => $primaryKey) {
+            $oldKey = self::getExistingPrimaryKeys($tableName);
+            $keyDiff = array_diff($primaryKey, $oldKey);
+            if (!empty($keyDiff)) {
+                $sql = "ALTER TABLE `" . $tableName . "`
+                    " . (empty($oldKey) ? "" : "DROP PRIMARY KEY, ") . "
+                    ADD PRIMARY KEY(" . implode(",", $primaryKey) . ")";
+                $db->query($sql);
+            }
+        }
     }
 
     public static function isTableExists($tableName)
