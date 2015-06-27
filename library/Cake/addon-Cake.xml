@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="Cake" title="Cake" version_string="1.0.0 Alpha 1" version_id="1000030" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="" uninstall_callback_method="">
-  <admin_navigation/>
+<addon addon_id="Cake" title="Cake" version_string="1.0.0 Alpha 2" version_id="1000031" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="" uninstall_callback_method="">
+  <admin_navigation>
+    <navigation navigation_id="addOnModules" parent_navigation_id="addOns" display_order="15" link="add-ons/modules" admin_permission_id="addOn" debug_only="0" hide_no_children="0" module_name_cake=""/>
+  </admin_navigation>
   <admin_permissions/>
   <admin_style_properties/>
   <admin_templates>
@@ -16,22 +18,209 @@
 {
 	{xen:property titlePrefix}
 }]]></template>
+    <template title="cake_addon_modules"><![CDATA[<xen:title>{xen:phrase cake_modules}: {$addOn.title}</xen:title>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink add-ons}#{xen:helper listitemid, $addOn.addon_id}">{$addOn.title}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:topctrl>
+	<a href="{xen:adminlink 'add-ons/modules/reset', {$addOn}}" class="button OverlayTrigger">{xen:phrase cake_revert_to_default}</a>
+</xen:topctrl>
+
+<xen:require css="filter_list.css" />
+<xen:require js="js/xenforo/filter_list.js" />
+
+<xen:form action="{xen:adminlink add-ons/modules-toggle, $addOn}" class="section AutoValidator">
+
+	<xen:if is="{$modules}">
+		<h2 class="subHeading">
+			<xen:include template="filter_list_controls" />
+			{xen:phrase cake_modules}
+		</h2>
+
+		<ol class="FilterList">
+			<xen:foreach loop="$modules" key="$moduleName" value="$module">
+				<xen:listitem id="{$moduleName}"
+					label="{$module.title}"
+					snippet="{$module.description}"
+					toggle="{$module.active}"
+					toggletitle="{xen:phrase enable_disable_x, 'title={$moduleName}'}">
+				</xen:listitem>
+			</xen:foreach>
+		</ol>
+
+		<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $modules}</span>', 'total={xen:count $modules}'}</p>
+
+	<xen:else />
+		<div class="noResults">{xen:phrase cake_this_add_on_has_no_modules}</div>
+	</xen:if>
+	
+</xen:form>]]></template>
+    <template title="cake_addon_modules_list"><![CDATA[<xen:title>{xen:phrase cake_modules}</xen:title>
+
+<xen:require css="filter_list.css" />
+<xen:require js="js/xenforo/filter_list.js" />
+<xen:require css="cake_addon_list.css" />
+
+<xen:set var="$forumCakePrefix"><span class="prefix forumCakePrefix"></xen:set>
+
+<h2 class="subHeading">
+	<xen:include template="filter_list_controls" />
+	{xen:phrase cake_add_ons_with_modules}
+</h2>
+
+<ol class="FilterList">
+	<xen:foreach loop="$addOns" key="$addOnId" value="$addOn">
+		<xen:if is="{$addOn.moduleCount}">
+			<xen:listitem id="{$addOn.addon_id}"
+				label="{xen:if {$addOn.prefix}, '{xen:raw $forumCakePrefix}{$addOn.prefix}</span>'} {$addOn.title}"
+				snippet="{xen:phrase cake_x_of_y_modules_active, 'active={$addOn.activeModuleCount}', 'total={$addOn.moduleCount}'}"
+				href="{xen:adminlink 'add-ons/modules', $addOn}"
+				tooltip="{xen:phrase add_on_id_version_id, 'addon_id={$addOn.addon_id}', 'version_id={$addOn.version_id}'}">
+			</xen:listitem>
+		</xen:if>
+	</xen:foreach>
+</ol>
+
+<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $addOns}</span>', 'total={xen:count $addOns}'}</p>]]></template>
+    <template title="cake_addon_modules_reset"><![CDATA[<xen:title>{xen:phrase cake_confirm_revert_to_default}: {$addOn.title}</xen:title>
+<xen:h1>{xen:phrase cake_confirm_revert_to_default}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink 'add-ons/edit', $addOn}">{$addOn.title}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="public:delete_confirmation.css" />
+
+<xen:form action="{xen:adminlink 'add-ons/modules/reset', $addOn}" class="deleteConfirmForm formOverlay">
+
+	<p>{xen:phrase cake_please_confirm_that_you_want_to_revert_to_default_enabled_modules_for_add_on}:</p>
+	<strong><a href="{xen:adminlink 'add-ons/edit', $addOn}">{$addOn.title}</a></strong>
+
+	<xen:submitunit save="{xen:phrase cake_revert_to_default}" />
+	
+	<input type="hidden" name="_xfConfirm" value="1" />
+</xen:form>]]></template>
+    <template title="cake_option_list"><![CDATA[<xen:if hascontent="true">
+<fieldset>
+	<xen:contentcheck>
+		<xen:if hascontent="true">
+		<div class="topChoosers">
+			<xen:contentcheck>
+			<xen:if is="{$addOns} && {$selectedAddOn}">
+				<div class="Popup">
+					<span class="muted">{xen:phrase add_ons}:</span> <a rel="Menu">{$addOns.{$selectedAddOn}.title}</a>
+					<div class="Menu">
+						<div class="primaryContent menuHeader"><h3>{xen:phrase add_ons}</h3></div>
+						<ul class="secondaryContent blockLinksList">
+						<xen:foreach loop="$addOns" value="$_addOn">
+							<li><a href="{xen:adminlink 'options/list', $_addOn}">{$_addOn.title}</a></li>
+						</xen:foreach>
+						</ul>
+					</div>
+				</div>
+			</xen:if>
+			<xen:if is="{$selectedModuleName}">
+				<div class="Popup">
+					<span class="muted">{xen:phrase cake_modules}:</span> <a rel="Menu">{$modules.{$selectedModuleName}.title}</a>
+					<div class="Menu">
+						<div class="primaryContent menuHeader"><h3>{xen:phrase cake_modules}</h3></div>
+						<ul class="secondaryContent blockLinksList">
+						<li><a href="{xen:adminlink 'options/list', {$addOns.{$selectedAddOn}}}">{$addOns.{$selectedAddOn}.title}</a></li>
+						<xen:foreach loop="$modules" value="$_module">
+							<li><a href="{xen:adminlink 'options/list', {$addOns.{$selectedAddOn}}, 'module_name={$_module.module_name}'}">{$_module.title}</a></li>
+						</xen:foreach>
+						</ul>
+					</div>
+				</div>
+			</xen:if>
+			</xen:contentcheck>
+		</div>
+		</xen:if>
+	
+		<xen:if is="{$addOns} && !strpos({$selectedAddOn}, '_')">
+			<xen:require css="filter_list.css" />
+			<xen:require js="js/xenforo/filter_list.js" />
+		
+			<h2 class="subHeading">
+				<xen:include template="filter_list_controls" />
+				{xen:phrase add_ons}
+			</h2>
+		
+			<ol class="FilterList Scrollable">
+				<xen:foreach loop="$addOns" value="$_addOn">
+					<xen:if is="{$selectedAddOn} != {$_addOn.addon_id}">
+						<xen:listitem
+							id="addon-{$_addOn.addon_id}"
+							label="{$_addOn.title}"
+							href="{xen:adminlink 'options/list', $_addOn}" />
+					</xen:if>
+				</xen:foreach>
+			</ol>
+		
+			<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:calc '{xen:count $addOns} - 1'}</span>', 'total={xen:calc '{xen:count $addOns} - 1'}'}</p>
+		</xen:if>
+	
+		<xen:if is="{$modules} && !{$selectedModuleName}">
+			<xen:require css="filter_list.css" />
+			<xen:require js="js/xenforo/filter_list.js" />
+		
+			<h2 class="subHeading">
+				<xen:include template="filter_list_controls" />
+				{xen:phrase cake_modules}
+			</h2>
+		
+			<ol class="FilterList Scrollable">
+				<xen:foreach loop="$modules" value="$module">
+					<xen:listitem
+						id="module-{$module.module_name}"
+						label="{$module.title}"
+						snippet="{$module.description}"
+						href="{xen:adminlink 'options/list', {$addOns.{$selectedAddOn}}, 'module_name={$module.module_name}'}" />
+				</xen:foreach>
+			</ol>
+		
+			<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $modules}</span>', 'total={xen:count $modules}'}</p>
+		</xen:if>
+	</xen:contentcheck>
+</fieldset>
+</xen:if>]]></template>
+    <template title="cake_option_template_explain"><![CDATA[<xen:controlunit label="{$preparedOption.title}">
+	{xen:raw $preparedOption.explain}
+	{xen:raw $editLink}
+</xen:controlunit>]]></template>
   </admin_templates>
   <admin_template_modifications>
     <modification template="addon_list" modification_key="cake_addonList" description="" execution_order="10" enabled="1" action="preg_replace">
-      <find><![CDATA[#(^.*<xen:listitem.*label=")([^\s]*")#Us]]></find>
+      <find><![CDATA[#(^.*<xen:listitem.*label=")([^\s]*")(.*>\s*<xen:popup.*)(</xen:popup>)#Us]]></find>
       <replace><![CDATA[<xen:require css="cake_addon_list.css" />
 <xen:set var="$forumCakePrefix"><span class="prefix forumCakePrefix"></xen:set>
 ${1}{xen:if {$addOn.prefix}, '{xen:raw $forumCakePrefix}{$addOn.prefix}</span>'} ${2}
-					class="_depth{$addOn.depth}"]]></replace>
+					class="_depth{$addOn.depth}"${3}
+<xen:link href="{xen:adminlink 'add-ons/modules', $addOn}" displayif="{$addOn.moduleCount}">{xen:phrase cake_modules} ({$addOn.moduleCount})</xen:link>
+${4}]]></replace>
+    </modification>
+    <modification template="option_list" modification_key="cake_optionList" description="" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<xen:foreach loop="\$renderedOptions"#Us]]></find>
+      <replace><![CDATA[<xen:include template="cake_option_list" />
+${0}]]></replace>
     </modification>
   </admin_template_modifications>
   <code_events/>
   <code_event_listeners>
-    <listener event_id="load_class_controller" execute_order="10" callback_class="Cake\Listener" callback_method="loadClass" active="1" hint="XenForo_ControllerAdmin_AddOn" description=""/>
-    <listener event_id="load_class_datawriter" execute_order="10" callback_class="Cake\Listener" callback_method="loadClass" active="1" hint="XenForo_DataWriter_Template" description=""/>
-    <listener event_id="load_class_datawriter" execute_order="10" callback_class="Cake\Listener" callback_method="loadClass" active="1" hint="XenForo_DataWriter_AdminTemplate" description=""/>
-    <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Listener" callback_method="loadClass" active="1" hint="XenForo_Model_AdminTemplate" description=""/>
+    <listener event_id="container_admin_params" execute_order="10" callback_class="Cake\Admin" callback_method="containerAdminParams" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Template_Compiler_Admin" description=""/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_ControllerAdmin_AddOn" description=""/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_ControllerAdmin_Option" description=""/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_DataWriter_Template" description=""/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_DataWriter_AdminTemplate" description=""/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_AdminTemplate" description=""/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_TemplateModification" description=""/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_AdminTemplateModification" description=""/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_AddOn" description=""/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_AdminNavigation" description=""/>
+    <listener event_id="load_class_route_prefix" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Route_PrefixAdmin_Options" description=""/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
@@ -45,9 +234,18 @@ ${1}{xen:if {$addOn.prefix}, '{xen:raw $forumCakePrefix}{$addOn.prefix}</span>'}
     <interface_groups/>
   </permissions>
   <phrases>
+    <phrase title="admin_navigation_addOnModules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Enable/Disable Modules]]></phrase>
     <phrase title="cake" version_id="1000030" version_string="1.0.0 Alpha 1"><![CDATA[Cake]]></phrase>
+    <phrase title="cake_add_ons_with_modules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Add-ons with Modules]]></phrase>
+    <phrase title="cake_confirm_revert_to_default" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Confirm Revert to Default]]></phrase>
+    <phrase title="cake_modules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Modules]]></phrase>
+    <phrase title="cake_please_confirm_that_you_want_to_revert_to_default_enabled_modules_for_add_on" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Please confirm that you want to revert to the the default enabled modules for add-on:]]></phrase>
+    <phrase title="cake_revert_to_default" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Revert to Default]]></phrase>
+    <phrase title="cake_set_as_default" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Set as Default]]></phrase>
+    <phrase title="cake_this_add_on_has_no_modules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[This add-on has no modules.]]></phrase>
+    <phrase title="cake_x_of_y_modules_active" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[{active} of {total} modules active]]></phrase>
     <phrase title="option_group_cake" version_id="1000030" version_string="1.0.0 Alpha 1"><![CDATA[Cake Options]]></phrase>
-    <phrase title="option_group_cake_description" version_id="1000030" version_string="1.0.0 Alpha 1"><![CDATA[Options for Cake add-ons.]]></phrase>
+    <phrase title="option_group_cake_description" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Options for all Cake add-ons and modules.]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>

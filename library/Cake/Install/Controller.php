@@ -38,6 +38,12 @@ class Install_Controller
                 \Cake\Helper_MySql::createTables($tables);
             }
             
+            $tableChanges = $data->getTableChanges();
+            
+            if ($tableChanges) {
+                \Cake\Helper_MySql::makeTableChanges($tableChanges);
+            }
+            
             $modules = $data->getModules();
             
             foreach ($modules as $moduleNamespace => $enabled) {

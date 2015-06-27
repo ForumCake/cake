@@ -141,6 +141,8 @@ class Helper_MySql
      */
     public static function getRowPatternFromTableDescription(array $description)
     {
+        $db = \XenForo_Application::getDb();
+        
         return '#' . preg_quote(
             $description['DATA_TYPE'] . ($description['LENGTH'] ? '(' . $description['LENGTH'] . ')' : '') .
                  ($description['UNSIGNED'] ? ' UNSIGNED' : '') . ($description['NULLABLE'] ? ' NULL' : ' NOT NULL') .
