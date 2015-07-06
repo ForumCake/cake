@@ -111,21 +111,27 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
         
         $libraryDir = \XenForo_Autoloader::getInstance()->getRootDir() . DIRECTORY_SEPARATOR;
         $libraryDir .= str_replace('_', DIRECTORY_SEPARATOR, $addOnId) . DIRECTORY_SEPARATOR;
+
+        $rebuildAddOnCaches = false;
         
         $filename = $libraryDir . 'addon-' . $addOnId . '.xml';
-        $xml = \XenForo_Helper_DevelopmentXml::scanFile($filename);
-        
-        $module = array(
-            'module_name' => $moduleName,
-            'addon_id' => $addOnId,
-            'version_id' => $installData::$versionId,
-            'version_string' => $installData::$version
-        );
-        
-        $installedModules = $this->getInstalledModulesForAddOn($addOnId);
-        $this->_installedModuleCache[$addOnId][$moduleName] = $module;
-        
-        $this->importAddOnExtraDataFromXml($xml, $addOnId);
+        if (file_exists($filename)) {
+            $xml = \XenForo_Helper_DevelopmentXml::scanFile($filename);
+            
+            $module = array(
+                'module_name' => $moduleName,
+                'addon_id' => $addOnId,
+                'version_id' => $installData::$versionId,
+                'version_string' => $installData::$version
+            );
+            
+            $installedModules = $this->getInstalledModulesForAddOn($addOnId);
+            $this->_installedModuleCache[$addOnId][$moduleName] = $module;
+            
+            $this->importAddOnExtraDataFromXml($xml, $addOnId);
+            
+            $rebuildAddOnCaches = true;
+        }
         
         $installData->install();
         
@@ -135,7 +141,11 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
         
         \XenForo_Db::commit($db);
         
-        $this->rebuildAddOnCaches();
+        if ($rebuildAddOnCaches) {
+            $this->rebuildAddOnCaches();
+        } else {
+            $this->rebuildAddOnCachesAfterActiveSwitch($addOn);
+        }
     }
 
     public function enableModule(array $addOn, $moduleName)
@@ -168,13 +178,19 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
         $libraryDir = \XenForo_Autoloader::getInstance()->getRootDir() . DIRECTORY_SEPARATOR;
         $libraryDir .= str_replace('_', DIRECTORY_SEPARATOR, $addOnId) . DIRECTORY_SEPARATOR;
         
+        $rebuildAddOnCaches = false;
+        
         $filename = $libraryDir . 'addon-' . $addOnId . '.xml';
-        $xml = \XenForo_Helper_DevelopmentXml::scanFile($filename);
-        
-        $installedModules = $this->getInstalledModulesForAddOn($addOnId);
-        unset($this->_installedModuleCache[$addOnId][$moduleName]);
-        
-        $this->importAddOnExtraDataFromXml($xml, $addOnId);
+        if (file_exists($filename)) {
+            $xml = \XenForo_Helper_DevelopmentXml::scanFile($filename);
+            
+            $installedModules = $this->getInstalledModulesForAddOn($addOnId);
+            unset($this->_installedModuleCache[$addOnId][$moduleName]);
+            
+            $this->importAddOnExtraDataFromXml($xml, $addOnId);
+            
+            $rebuildAddOnCaches = true;
+        }
         
         $installData->uninstall();
         
@@ -183,8 +199,12 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
         $this->disableModule($addOn, $moduleName);
         
         \XenForo_Db::commit($db);
-        
-        $this->rebuildAddOnCaches();
+
+        if ($rebuildAddOnCaches) {
+            $this->rebuildAddOnCaches();
+        } else {
+            $this->rebuildAddOnCachesAfterActiveSwitch($addOn);
+        }
     }
 
     public function disableModule(array $addOn, $moduleName)
