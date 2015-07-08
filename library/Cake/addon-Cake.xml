@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="Cake" title="Cake" version_string="1.0.0 Alpha 3" version_id="1000032" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="Cake\Install_Controller" uninstall_callback_method="uninstall">
+<addon addon_id="Cake" title="Cake" version_string="1.0.0 Alpha 4" version_id="1000033" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="Cake\Install_Controller" uninstall_callback_method="uninstall">
   <admin_navigation>
     <navigation navigation_id="addOnModules" parent_navigation_id="addOns" display_order="15" link="add-ons/modules" admin_permission_id="addOn" debug_only="0" hide_no_children="0"/>
   </admin_navigation>
@@ -27,6 +27,12 @@
 <xen:topctrl>
 	<a href="{xen:adminlink 'add-ons/modules/reset', {$addOn}}" class="button OverlayTrigger">{xen:phrase cake_revert_to_default}</a>
 </xen:topctrl>
+
+<xen:if is="{$outdatedModules}">
+	<p class="importantMessage">
+		<a href="{xen:adminlink add-ons/modules/rebuild, {$addOn}}" class="OverlayTrigger">{xen:phrase cake_there_modules_that_may_be_outdated_click_to_rebuild}</a>
+	</p>
+</xen:if>
 
 <xen:require css="filter_list.css" />
 <xen:require js="js/xenforo/filter_list.js" />
@@ -102,6 +108,9 @@
 				snippet="{xen:phrase cake_x_of_y_modules_active, 'active={$addOn.activeModuleCount}', 'total={$addOn.moduleCount}'}"
 				href="{xen:adminlink 'add-ons/modules', $addOn}"
 				tooltip="{xen:phrase add_on_id_version_id, 'addon_id={$addOn.addon_id}', 'version_id={$addOn.version_id}'}">
+				<xen:html>
+					<a href="{xen:adminlink 'add-ons/modules/rebuild', $addOn}" class="secondaryContent OverlayTrigger">{xen:phrase cake_rebuild}</a>
+				</xen:html>
 			</xen:listitem>
 		</xen:if>
 	</xen:foreach>
@@ -126,7 +135,24 @@
 	
 	<input type="hidden" name="_xfConfirm" value="1" />
 </xen:form>]]></template>
-    <template title="cake_module_install"><![CDATA[<xen:title>{xen:phrase cake_confirm_installation_of_module}: {$customPrivacyError.title}</xen:title>
+    <template title="cake_addon_rebuild"><![CDATA[<xen:title>{xen:phrase cake_confirm_rebuild_addon}: {$addOn.title}</xen:title>
+<xen:h1>{xen:phrase cake_confirm_rebuild_addon}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink 'add-ons/modules', $addOn}">{$addOn.title}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="delete_confirmation.css" />
+
+<xen:form action="{xen:adminlink 'add-ons/modules/rebuild', $addOn}" class="deleteConfirmForm">
+	<p>{xen:phrase cake_please_confirm_rebuild_following_add_on}:</p>
+	<strong>{$addOn.title}</strong>
+	
+	<xen:submitunit save="{xen:phrase cake_rebuild_add_on}" />
+
+	<input type="hidden" name="_xfConfirm" value="1" />
+</xen:form>]]></template>
+    <template title="cake_module_install"><![CDATA[<xen:title>{xen:phrase cake_confirm_installation_of_module}: {$module.module_name}</xen:title>
 <xen:h1>{xen:phrase cake_confirm_installation_of_module}</xen:h1>
 
 <xen:navigation>
@@ -297,6 +323,7 @@ ${0}]]></replace>
     <phrase title="cake_add_ons_with_modules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Add-ons with Modules]]></phrase>
     <phrase title="cake_available_modules" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Available Modules]]></phrase>
     <phrase title="cake_confirm_installation_of_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Confirm Installation of Module]]></phrase>
+    <phrase title="cake_confirm_rebuild_addon" version_id="1000033" version_string="1.0.0 Alpha 4"><![CDATA[Confirm Rebuild Add-on]]></phrase>
     <phrase title="cake_confirm_revert_to_default" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Confirm Revert to Default]]></phrase>
     <phrase title="cake_confirm_uninstallation_of_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Confirm Uninstallation of Module]]></phrase>
     <phrase title="cake_install" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Install]]></phrase>
@@ -304,10 +331,14 @@ ${0}]]></replace>
     <phrase title="cake_install_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Install Module]]></phrase>
     <phrase title="cake_modules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Modules]]></phrase>
     <phrase title="cake_please_confirm_install_following_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Please confirm you want to install the following module]]></phrase>
+    <phrase title="cake_please_confirm_rebuild_following_add_on" version_id="1000033" version_string="1.0.0 Alpha 4"><![CDATA[Please confirm you want to rebuild the following add-on]]></phrase>
     <phrase title="cake_please_confirm_that_you_want_to_revert_to_default_enabled_modules_for_add_on" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Please confirm that you want to revert to the the default enabled modules for add-on:]]></phrase>
     <phrase title="cake_please_confirm_uninstall_following_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Please confirm you want to uninstall the following module]]></phrase>
+    <phrase title="cake_rebuild" version_id="1000033" version_string="1.0.0 Alpha 4"><![CDATA[Rebuild]]></phrase>
+    <phrase title="cake_rebuild_add_on" version_id="1000033" version_string="1.0.0 Alpha 4"><![CDATA[Rebuild Add-on]]></phrase>
     <phrase title="cake_revert_to_default" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Revert to Default]]></phrase>
     <phrase title="cake_set_as_default" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Set as Default]]></phrase>
+    <phrase title="cake_there_modules_that_may_be_outdated_click_to_rebuild" version_id="1000033" version_string="1.0.0 Alpha 4"><![CDATA[There are modules that may be outdated. Click to rebuild.]]></phrase>
     <phrase title="cake_this_add_on_has_no_modules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[This add-on has no modules.]]></phrase>
     <phrase title="cake_uninstall_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Uninstall Module]]></phrase>
     <phrase title="cake_x_of_y_modules_active" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[{active} of {total} modules active]]></phrase>

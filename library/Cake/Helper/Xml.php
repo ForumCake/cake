@@ -6,6 +6,8 @@ class Helper_Xml
 
     public static function appendXml(\SimpleXMLElement $element1, \SimpleXMLElement $element2)
     {
+        // TODO check for empty $element1 and skip if necessary
+        
         $xml = $element1->addChild($element2->getName());
         
         if (strlen(trim((string) $element2)) == 0) {

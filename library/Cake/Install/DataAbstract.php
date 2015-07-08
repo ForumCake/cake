@@ -4,6 +4,10 @@ namespace Cake;
 abstract class Install_DataAbstract
 {
 
+    public static $version = '';
+    
+    public static $versionId = 0;
+    
     /**
      * Factory method to get the named install data.
      * Returns false if the class does not exist.
@@ -158,6 +162,7 @@ abstract class Install_DataAbstract
         $backslash = strrpos($calledClass, '\\');
         if ($backslash !== false) {
             $namespace = substr($calledClass, 0, $backslash);
+            $addOnId = str_replace('\\', '_', $namespace);
             $path = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
             $path = \XenForo_Autoloader::getInstance()->getRootDir() . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR;
             $weeds = array(
@@ -171,15 +176,18 @@ abstract class Install_DataAbstract
                     continue;
                 }
                 if ($namespace == 'Cake') {
-                    $addOnId = 'Cake_' . $value;
-                    if (file_exists($path . $value . DIRECTORY_SEPARATOR . 'addon-' . $addOnId . '.xml')) {
+                    if (file_exists($path . $value . DIRECTORY_SEPARATOR . 'addon-Cake_' . $value . '.xml')) {
                         continue;
                     }
                 }
                 if (in_array($value, $nonModules)) {
                     continue;
                 }
-                $modules[$value] = true;
+                $installData = \Cake\Install_DataAbstract::createForModule($addOnId, $value);
+                if (!$installData) {
+                    continue;
+                }
+                $modules[$value] = $installData::$versionId;
             }
         }
         

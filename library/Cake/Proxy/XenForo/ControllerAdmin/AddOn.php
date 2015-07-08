@@ -54,8 +54,15 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
         $activeModules = Proxy::getOptionValue('modules', $addOnId);
         
         $availableModules = array();
-        foreach ($modules as $moduleName => $default) {
+        $outdatedModules = array();
+        foreach ($modules as $moduleName => $versionId) {
             $installed = isset($installedModules[$moduleName]);
+            if ($installed) {
+                $outdated = $installedModules[$moduleName]['version_id'] != $versionId;
+                if ($outdated) {
+                    $outdatedModules[] = $moduleName;
+                }
+            }
             $module = array(
                 'title' => new \XenForo_Phrase(\Cake\Helper_String::pascalCaseToCamelCase($addOnId . '_' . $moduleName)),
                 'description' => new \XenForo_Phrase(
@@ -72,7 +79,8 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
         $viewParams = array(
             'addOn' => $addOn,
             'installedModules' => $installedModules,
-            'availableModules' => $availableModules
+            'availableModules' => $availableModules,
+            'outdatedModules' => $outdatedModules
         );
         
         return $this->responseView('Cake\ViewAdmin_AddOn_Modules', 'cake_addon_modules', $viewParams);
@@ -179,6 +187,31 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
             );
     
             return $this->responseView('ViewAdmin_AddOn_Modules_Uninstall', 'cake_module_uninstall', $viewParams);
+        }
+    }
+
+    public function actionModulesrebuild()
+    {
+        $addOnId = $this->_input->filterSingle('addon_id', \XenForo_Input::STRING);
+    
+        $addOn = $this->_getAddOnOrError($addOnId);
+    
+        if ($this->isConfirmedPost()) {
+            $addOnModel = $this->_getAddOnModel();
+
+            $addOnModel->rebuildModulesForAddOn($addOn);
+    
+            return $this->responseRedirect(\XenForo_ControllerResponse_Redirect::SUCCESS,
+                \XenForo_Link::buildAdminLink('add-ons/modules',
+                    array(
+                        'addon_id' => $addOnId
+                    )));
+        } else {
+            $viewParams = array(
+                'addOn' => $addOn,
+            );
+    
+            return $this->responseView('ViewAdmin_AddOn_Modules_Rebuild', 'cake_addon_rebuild', $viewParams);
         }
     }
 
