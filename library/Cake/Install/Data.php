@@ -31,6 +31,9 @@ class Install_Data extends Install_DataAbstract
         return array(
             'xf_admin_navigation' => array(
                 'module_name_cake' => 'varchar(25) NOT NULL DEFAULT \'\''
+            ),
+            'xf_bb_code' => array(
+                'module_name_cake' => 'varchar(25) NOT NULL DEFAULT \'\''
             )
         );
     }
