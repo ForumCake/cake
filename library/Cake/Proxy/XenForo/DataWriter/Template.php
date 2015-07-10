@@ -19,7 +19,7 @@ class XenForo_DataWriter_Template extends XFCP_XenForo_DataWriter_Template
     {
         $standardParse = true;
         $parsed = null;
-        
+
         if (!$this->get('disable_modifications')) {
             $templateWithModifications = $this->_getModificationModel()->applyModificationsToTemplate(
                 $this->get('title'), $template, $modificationStatuses);
@@ -27,12 +27,12 @@ class XenForo_DataWriter_Template extends XFCP_XenForo_DataWriter_Template
             $modificationStatuses = null;
             $templateWithModifications = $template;
         }
-        
+
         if ($modificationStatuses) {
             try {
                 $compiler = \Cake\Template_Compiler::create('XenForo_Template_Compiler', $templateWithModifications);
                 $parsed = $compiler->lexAndParse();
-                
+
                 if ($this->getOption(self::OPTION_TEST_COMPILE)) {
                     $compiler->setFollowExternal(false);
                     $compiler->compileParsed($parsed, $this->get('title'), 0, 0);
@@ -46,12 +46,12 @@ class XenForo_DataWriter_Template extends XFCP_XenForo_DataWriter_Template
                 }
             }
         }
-        
+
         if ($standardParse) {
             try {
                 $compiler = \Cake\Template_Compiler::create('XenForo_Template_Compiler', $template);
                 $parsed = $compiler->lexAndParse();
-                
+
                 if ($this->getOption(self::OPTION_TEST_COMPILE)) {
                     $compiler->setFollowExternal(false);
                     $compiler->compileParsed($parsed, $this->get('title'), 0, 0);
@@ -61,7 +61,7 @@ class XenForo_DataWriter_Template extends XFCP_XenForo_DataWriter_Template
                 return false;
             }
         }
-        
+
         $this->set('template_parsed', serialize($parsed));
         $this->_modificationStatuses = $modificationStatuses;
         return true;

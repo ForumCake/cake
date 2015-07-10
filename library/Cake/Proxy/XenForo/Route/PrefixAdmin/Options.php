@@ -22,7 +22,7 @@ class XenForo_Route_PrefixAdmin_Options extends XFCP_XenForo_Route_PrefixAdmin_O
                 }
             }
         }
-        
+
         return parent::match($routePath, $request, $router);
     }
 
@@ -30,7 +30,7 @@ class XenForo_Route_PrefixAdmin_Options extends XFCP_XenForo_Route_PrefixAdmin_O
     {
         if (is_array($data)) {
             \XenForo_Link::prepareExtensionAndAction($extension, $action);
-            
+
             if (strpos($action, '-option') === false) {
                 if (!isset($data['group_id']) && isset($data['addon_id'])) {
                     $addOnIdParts = explode('_', $data['addon_id'], 2);
@@ -38,7 +38,7 @@ class XenForo_Route_PrefixAdmin_Options extends XFCP_XenForo_Route_PrefixAdmin_O
                         $addOnPart = lcfirst($addOnPart);
                     }
                     $groupId = implode('/', $addOnIdParts);
-                    
+
                     if (isset($extraParams['module_name'])) {
                         $moduleName = lcfirst($extraParams['module_name']);
                         unset($extraParams['module_name']);
@@ -48,7 +48,7 @@ class XenForo_Route_PrefixAdmin_Options extends XFCP_XenForo_Route_PrefixAdmin_O
                 }
             }
         }
-        
+
         return parent::buildLink($originalPrefix, $outputPrefix, $action, $extension, $data, $extraParams);
     }
 }

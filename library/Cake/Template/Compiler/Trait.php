@@ -12,7 +12,7 @@ trait Template_Compiler_Trait
             $this->_functionHandlers[strtolower($function)] = new $createClass();
             return $this;
         }
-        
+
         return parent::addFunctionHandler($function, $handler);
     }
 
@@ -24,7 +24,7 @@ trait Template_Compiler_Trait
             $this->_tagHandlers[strtolower($tag)] = new $createClass();
             return $this;
         }
-        
+
         return parent::addTagHandler($tag, $handler);
     }
 }

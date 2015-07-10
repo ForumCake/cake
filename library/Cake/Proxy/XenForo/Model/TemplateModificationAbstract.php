@@ -7,7 +7,7 @@ trait XenForo_Model_TemplateModificationAbstract
     public function getActiveModificationsForTemplate($title)
     {
         $modifications = parent::getActiveModificationsForTemplate($title);
-        
+
         if ($modifications) {
             foreach ($modifications as $key => $modification) {
                 $addOnId = $modification['addon_id'];
@@ -18,9 +18,9 @@ trait XenForo_Model_TemplateModificationAbstract
                     $parts = explode('_', $modificationKey, 2);
                     if (count($parts) == 2) {
                         list($moduleName, $modificationKey) = $parts;
-                        
+
                         $activeModules = \Cake\Proxy::getOptionValue('modules', $addOnId);
-                        
+
                         if (empty($activeModules[$moduleName])) {
                             unset($modifications[$key]);
                         }
@@ -28,7 +28,7 @@ trait XenForo_Model_TemplateModificationAbstract
                 }
             }
         }
-        
+
         return $modifications;
     }
 }

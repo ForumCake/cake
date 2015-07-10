@@ -7,16 +7,16 @@ trait Trait_Core
     public function getOptionValue($option)
     {
         $xenOptions = \XenForo_Application::getOptions();
-        
+
         $calledClass = get_called_class();
-        
+
         $backslash = strrpos($calledClass, '\\');
         if ($backslash !== false) {
             $preOption = str_replace('\\', '_', substr($calledClass, 0, $backslash));
             $preOption = Helper_String::pascalCaseToCamelCase($preOption);
             $option = $preOption . '_' . $option;
         }
-        
+
         return $xenOptions->$option;
     }
 
@@ -25,14 +25,14 @@ trait Trait_Core
         if ((strpos($class, '\\') === false && strpos($class, '_') === false) ||
              (strlen($class) > 5 && substr($class, 6) == 'Model_')) {
             $calledClass = get_called_class();
-            
+
             $backslash = strrpos($calledClass, '\\');
             if ($backslash !== false) {
                 $namespace = substr($calledClass, 0, $backslash);
                 $class = $namespace . '\\' . $class;
             }
         }
-        
+
         return parent::getModelFromCache($class);
     }
 
@@ -40,28 +40,28 @@ trait Trait_Core
     {
         if (strpos($class, '_') === false || (strlen($class) > 10 && substr($class, 11) == 'DataWriter_')) {
             $calledClass = get_called_class();
-            
+
             $backslash = strrpos($calledClass, '\\');
             if ($backslash !== false) {
                 $namespace = substr($calledClass, 0, $backslash);
                 $class = $namespace . '\\' . $class;
             }
         }
-        
+
         return \XenForo_DataWriter::create($class);
     }
 
     public function isModuleActive($module)
     {
         $calledClass = get_called_class();
-        
+
         $backslash = strrpos($calledClass, '\\');
         if ($backslash !== false) {
             $namespace = substr($calledClass, 0, $backslash);
-            
+
             $namespaceParts = explode('\\', $namespace);
             $addOns = \XenForo_Application::get('addOns');
-            
+
             $addOnId = '';
             while ($namespaceParts) {
                 $_addOnId = implode('_', $namespaceParts);
@@ -71,16 +71,16 @@ trait Trait_Core
                 }
                 array_pop($namespaceParts);
             }
-            
+
             if ($addOnId) {
                 $activeModules = \Cake\Proxy::getOptionValue('modules', $addOnId);
-                
+
                 if ($module && !empty($activeModules[$module])) {
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
 }

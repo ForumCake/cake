@@ -5,9 +5,9 @@ abstract class Install_DataAbstract
 {
 
     public static $version = '';
-    
+
     public static $versionId = 0;
-    
+
     /**
      * Factory method to get the named install data.
      * Returns false if the class does not exist.
@@ -22,7 +22,7 @@ abstract class Install_DataAbstract
         if (!$createClass) {
             return false;
         }
-        
+
         return new $createClass();
     }
 
@@ -38,11 +38,11 @@ abstract class Install_DataAbstract
     {
         $namespace = str_replace('_', '\\', $addOnId);
         $installData = self::create($namespace . '\\Install_Data');
-        
+
         if ($installData instanceof self) {
             return $installData;
         }
-        
+
         return false;
     }
 
@@ -59,30 +59,30 @@ abstract class Install_DataAbstract
     {
         $namespace = str_replace('_', '\\', $addOnId) . '\\' . $module;
         $installData = self::create($namespace . '\\Install_Data');
-        
+
         if ($installData instanceof self) {
             return $installData;
         }
-        
+
         return false;
     }
 
     public function install()
     {
         $tables = $this->getTables();
-        
+
         if ($tables) {
             \Cake\Helper_MySql::createTables($tables);
         }
-        
+
         $tableChanges = $this->getTableChanges();
-        
+
         if ($tableChanges) {
             \Cake\Helper_MySql::makeTableChanges($tableChanges);
         }
-        
+
         $primaryKeys = $this->getPrimaryKeys();
-        
+
         if ($primaryKeys) {
             \Cake\Helper_Mysql::addPrimaryKeys($primaryKeys);
         }
@@ -91,13 +91,13 @@ abstract class Install_DataAbstract
     public function uninstall()
     {
         $tables = $this->getTables();
-        
+
         if ($tables) {
             \Cake\Helper_MySql::dropTables($tables);
         }
-        
+
         $tableChanges = $this->getTableChanges();
-        
+
         if ($tableChanges) {
             \Cake\Helper_MySql::undoTableChanges($tableChanges);
         }
@@ -106,7 +106,7 @@ abstract class Install_DataAbstract
     public function installModule($addOnId, $moduleName)
     {
         $db = \XenForo_Application::getDb();
-        
+
         $db->query(
             '
                 INSERT INTO cake_module
@@ -114,7 +114,7 @@ abstract class Install_DataAbstract
                 VALUES (?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE version_id = VALUES(version_id),
                     version_string = VALUES(version_string)
-            ', 
+            ',
             array(
                 $moduleName,
                 $addOnId,
@@ -126,7 +126,7 @@ abstract class Install_DataAbstract
     public function uninstallModule($addOnId, $moduleName)
     {
         $db = \XenForo_Application::getDb();
-        
+
         $db->query(
             '
                 DELETE FROM cake_module
@@ -155,9 +155,9 @@ abstract class Install_DataAbstract
     public function getModules()
     {
         $calledClass = get_called_class();
-        
+
         $nonModules = $this->getNonModuleDirs();
-        
+
         $modules = array();
         $backslash = strrpos($calledClass, '\\');
         if ($backslash !== false) {
@@ -170,7 +170,7 @@ abstract class Install_DataAbstract
                 '..'
             );
             $directories = array_diff(scandir($path), $weeds);
-            
+
             foreach ($directories as $value) {
                 if (!is_dir($path . $value)) {
                     continue;
@@ -190,14 +190,14 @@ abstract class Install_DataAbstract
                 $modules[$value] = $installData::$versionId;
             }
         }
-        
+
         return $modules;
     }
 
     public function getNonModuleDirs()
     {
         return array_unique(
-            array_merge($this->_getNonModuleDirs(), 
+            array_merge($this->_getNonModuleDirs(),
                 array(
                     'AdminSearchHandler',
                     'AlertHandler',

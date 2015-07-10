@@ -13,7 +13,7 @@ class Helper_MySql
     public static function createTables(array $tables)
     {
         $db = \XenForo_Application::getDb();
-        
+
         foreach ($tables as $tableName => $rows) {
             if (!self::isTableExists($tableName)) {
                 $sql = "CREATE TABLE IF NOT EXISTS `" . $tableName . "` (";
@@ -43,7 +43,7 @@ class Helper_MySql
     public static function dropTables(array $tables)
     {
         $db = \XenForo_Application::getDb();
-        
+
         foreach ($tables as $tableName => $rows) {
             $sql = "DROP TABLE IF EXISTS `" . $tableName . "` ";
             $db->query($sql);
@@ -60,7 +60,7 @@ class Helper_MySql
     public static function makeTableChanges(array $tableChanges)
     {
         $db = \XenForo_Application::getDb();
-        
+
         $undoTableChanges = array();
         foreach ($tableChanges as $tableName => $rows) {
             if (self::isTableExists($tableName)) {
@@ -107,7 +107,7 @@ class Helper_MySql
     public static function undoTableChanges(array $tableChanges)
     {
         $db = \XenForo_Application::getDb();
-        
+
         foreach ($tableChanges as $tableName => $rows) {
             if (self::isTableExists($tableName)) {
                 $keys = array_keys($db->describeTable($tableName));
@@ -128,7 +128,7 @@ class Helper_MySql
     public static function getExistingPrimaryKeys($tableName)
     {
         $db = \XenForo_Application::getDb();
-        
+
         $primaryKeys = array();
         if (self::isTableExists($tableName)) {
             $columns = $db->describeTable($tableName);
@@ -144,7 +144,7 @@ class Helper_MySql
     public static function addPrimaryKeys(array $primaryKeys)
     {
         $db = \XenForo_Application::getDb();
-        
+
         foreach ($primaryKeys as $tableName => $primaryKey) {
             $oldKey = self::getExistingPrimaryKeys($tableName);
             $keyDiff = array_diff($primaryKey, $oldKey);
@@ -160,7 +160,7 @@ class Helper_MySql
     public static function isTableExists($tableName)
     {
         $db = \XenForo_Application::getDb();
-        
+
         if (!self::$_tablesList) {
             self::$_tablesList = array_map('strtolower', $db->listTables());
         }
@@ -175,7 +175,7 @@ class Helper_MySql
     public static function getRowPatternFromTableDescription(array $description)
     {
         $db = \XenForo_Application::getDb();
-        
+
         return '#' . preg_quote(
             $description['DATA_TYPE'] . ($description['LENGTH'] ? '(' . $description['LENGTH'] . ')' : '') .
                  ($description['UNSIGNED'] ? ' UNSIGNED' : '') . ($description['NULLABLE'] ? ' NULL' : ' NOT NULL') .

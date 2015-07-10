@@ -18,12 +18,12 @@ class XenForo_Model_AdminTemplate extends XFCP_XenForo_Model_AdminTemplate
     public function compileParsedAdminTemplate($templateId, array $parsedTemplate, $title)
     {
         $isCss = (substr($title, -4) == '.css');
-        
+
         $languages = $this->getModelFromCache('XenForo_Model_Language')->getAllLanguages();
         $db = $this->_getDb();
-        
+
         $compiler = \Cake\Template_Compiler::create('XenForo_Template_Compiler_Admin', '');
-        
+
         if ($isCss) {
             $compiledTemplate = $compiler->compileParsed($parsedTemplate, $title, 0, 0);
             $db->query(
@@ -33,7 +33,7 @@ class XenForo_Model_AdminTemplate extends XFCP_XenForo_Model_AdminTemplate
 				VALUES
 					(?, ?, ?)
 				ON DUPLICATE KEY UPDATE template_compiled = VALUES(template_compiled)
-			', 
+			',
                 array(
                     0,
                     $title,
@@ -49,7 +49,7 @@ class XenForo_Model_AdminTemplate extends XFCP_XenForo_Model_AdminTemplate
 					VALUES
 						(?, ?, ?)
 					ON DUPLICATE KEY UPDATE template_compiled = VALUES(template_compiled)
-				', 
+				',
                     array(
                         $language['language_id'],
                         $title,
@@ -57,7 +57,7 @@ class XenForo_Model_AdminTemplate extends XFCP_XenForo_Model_AdminTemplate
                     ));
             }
         }
-        
+
         $ins = array();
         foreach ($compiler->getIncludedTemplates() as $includedId) {
             $ins[] = '(' . $db->quote($templateId) . ', ' . $db->quote($includedId) . ')';
@@ -73,13 +73,13 @@ class XenForo_Model_AdminTemplate extends XFCP_XenForo_Model_AdminTemplate
 				VALUES
 					" . implode(',', $ins));
         }
-        
+
         $ins = array();
         foreach ($compiler->getIncludedPhrases() as $includedPhrase) {
             if (strlen($includedPhrase) > 75) {
                 continue; // too long, can't be a valid phrase
             }
-            
+
             $ins[] = '(' . $db->quote($templateId) . ', ' . $db->quote($includedPhrase) . ')';
         }
         $db->delete('xf_admin_template_phrase', 'template_id = ' . $db->quote($templateId));

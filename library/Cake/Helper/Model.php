@@ -12,12 +12,12 @@ class Helper_Model
     {
         if (\XenForo_Application::isRegistered('cakeControllers')) {
             $controllers = \XenForo_Application::get('cakeControllers');
-            
+
             if (isset($controllers[$controllerName])) {
                 return $controllers[$controllerName];
             }
         }
-        
+
         return false;
     }
 }

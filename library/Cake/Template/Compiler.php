@@ -10,7 +10,7 @@ class Template_Compiler
         if (!$createClass) {
             throw new \XenForo_Exception("Invalid compiler '$class' specified");
         }
-        
+
         return new $createClass($text);
     }
 }

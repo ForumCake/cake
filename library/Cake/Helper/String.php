@@ -10,7 +10,7 @@ class Helper_String
         foreach ($parts as &$part) {
             $part = lcfirst($part);
         }
-        
+
         return implode('_', $parts);
     }
 
@@ -32,21 +32,21 @@ class Helper_String
     public static function snakeCaseToCamelCase($snakeCase, $lcFirst = false)
     {
         $snakeCase = str_replace(' ', '', ucwords(str_replace('_', ' ', $snakeCase)));
-        
+
         $snakeCase = lcfirst($snakeCase);
-        
+
         return $snakeCase;
     }
 
     public static function trainCaseToCamelCase($snakeCase, $lcFirst = false)
     {
         $snakeCase = str_replace(' ', '', ucwords(str_replace('-', ' ', $snakeCase)));
-        
+
         $snakeCase = lcfirst($snakeCase);
-        
+
         return $snakeCase;
     }
-    
+
     public static function camelCaseToTrainCase($camelCase)
     {
         preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $camelCase, $matches);

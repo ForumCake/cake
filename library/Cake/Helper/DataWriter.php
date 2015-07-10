@@ -3,7 +3,7 @@ namespace Cake;
 
 class Helper_DataWriter
 {
-    
+
     /**
      *
      * @return \XenForo_Input|boolean
@@ -12,21 +12,21 @@ class Helper_DataWriter
     {
         if (\XenForo_Application::isRegistered('cakeControllers')) {
             $controllers = \XenForo_Application::get('cakeControllers');
-    
+
             if (isset($controllers[$controllerName])) {
                 return $controllers[$controllerName]->getInput();
             }
         }
-    
+
         return false;
     }
-    
+
     public static function setIfShown(\XenForo_DataWriter $dw, $cakeInput, $variableName, $filterData = null, array $options = array())
     {
         if (is_string($cakeInput)) {
             $cakeInput = self::getInput($cakeInput);
         }
-    
+
         if ($cakeInput instanceof \XenForo_Input) {
             if (!$filterData) {
                 $filterData = self::getFilterDataForField($dw, $variableName);
@@ -39,10 +39,10 @@ class Helper_DataWriter
                 return true;
             }
         }
-    
+
         return false;
     }
-    
+
     public static function getFilterDataForField(\XenForo_DataWriter $dw, $field)
     {
         if (is_string($field)) {
@@ -53,7 +53,7 @@ class Helper_DataWriter
                 }
             }
         }
-    
+
         if (is_array($field)) {
             if ($field['type'] == 'serialized' && $field['type'] == 'json') {
                 return \XenForo_Input::ARRAY_SIMPLE;
@@ -61,7 +61,7 @@ class Helper_DataWriter
                 return $field['type'];
             }
         }
-    
+
         return false;
     }
 }

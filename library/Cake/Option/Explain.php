@@ -16,7 +16,7 @@ class Option_Explain
     public static function render(\XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
     {
         if (\XenForo_Application::debugMode()) {
-            return \XenForo_ViewAdmin_Helper_Option::renderOptionTemplateInternal('cake_option_template_explain', $view, 
+            return \XenForo_ViewAdmin_Helper_Option::renderOptionTemplateInternal('cake_option_template_explain', $view,
                 $fieldPrefix, $preparedOption, $canEdit);
         }
     }
