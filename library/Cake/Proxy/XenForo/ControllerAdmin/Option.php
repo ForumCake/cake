@@ -28,7 +28,7 @@ class XenForo_ControllerAdmin_Option extends XFCP_XenForo_ControllerAdmin_Option
             
             $addOns = $addOnModel->getAddOnsWithIdPrefix(ucfirst($groupId));
             
-            if ($addOns) {
+            if (count($addOns) > 1) {
                 $addOns = $addOnModel->prepareCakeAddOns($addOns);
                 
                 $response->params['addOns'] = $addOns;
