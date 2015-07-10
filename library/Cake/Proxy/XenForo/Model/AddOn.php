@@ -40,6 +40,10 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
     public function deleteAddOnMasterData($addOnId)
     {
         parent::deleteAddOnMasterData($addOnId);
+
+        if ($addOnId == 'Cake') {
+            return;
+        }
         
         $db = $this->_getDb();
         
