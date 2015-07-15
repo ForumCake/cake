@@ -80,7 +80,9 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
                 if ($prefix) {
                     $addOn['prefix'] = new \XenForo_Phrase('cake');
                 } else {
-                    $addOn['title'] = new \XenForo_Phrase('cake_addon_title_x', array('title' => $addOn['title']));
+                    $addOn['title'] = new \XenForo_Phrase('cake_addon_title_x', array(
+                        'title' => $addOn['title']
+                    ));
                 }
             }
 
@@ -216,6 +218,8 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
         } else {
             $this->rebuildAddOnCachesAfterActiveSwitch($addOn);
         }
+
+        $installData->postInstall();
     }
 
     public function enableModule(array $addOn, $moduleName)
@@ -276,6 +280,8 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
         } else {
             $this->rebuildAddOnCachesAfterActiveSwitch($addOn);
         }
+
+        $installData->postUninstall();
     }
 
     public function disableModule(array $addOn, $moduleName)
