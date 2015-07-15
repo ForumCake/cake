@@ -86,6 +86,27 @@ abstract class Install_DataAbstract
         if ($primaryKeys) {
             \Cake\Helper_Mysql::addPrimaryKeys($primaryKeys);
         }
+
+        $this->_install();
+    }
+
+    /**
+     * Method designed to be overridden by child classes.
+     */
+    protected function _install()
+    {
+    }
+
+    public function postInstall()
+    {
+        $this->_postInstall();
+    }
+
+    /**
+     * Method designed to be overridden by child classes.
+     */
+    protected function _postInstall()
+    {
     }
 
     public function uninstall()
@@ -101,6 +122,27 @@ abstract class Install_DataAbstract
         if ($tableChanges) {
             \Cake\Helper_MySql::undoTableChanges($tableChanges);
         }
+
+        $this->_uninstall();
+    }
+
+    /**
+     * Method designed to be overridden by child classes.
+     */
+    protected function _uninstall()
+    {
+    }
+
+    public function postUninstall()
+    {
+        $this->_postUninstall();
+    }
+
+    /**
+     * Method designed to be overridden by child classes.
+     */
+    protected function _postUninstall()
+    {
     }
 
     public function installModule($addOnId, $moduleName)
@@ -249,8 +291,7 @@ abstract class Install_DataAbstract
     }
 
     /**
-     * Method designed to be overridden by child classes to add pre-save
-     * behaviors.
+     * Method designed to be overridden by child classes.
      */
     protected function _getNonModuleDirs()
     {
