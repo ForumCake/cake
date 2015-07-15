@@ -24,7 +24,7 @@ class XenForo_Model_Template extends XFCP_XenForo_Model_Template
             $doDbWrite = ($isCss || $compileStyleId);
         }
 
-        $compiler = \Cake\Template_Compiler::create('XenForo_Template_Compiler_Admin', '');
+        $compiler = \Cake\Template_Compiler::create('XenForo_Template_Compiler', '');
         $languages = $this->getModelFromCache('XenForo_Model_Language')->getAllLanguages();
 
         $db = $this->_getDb();
