@@ -33,6 +33,17 @@ class Install_Controller
 
         $addOnId = $addOnData['addon_id'];
 
+        $xenOptions = \XenForo_Application::getOptions();
+
+        if ($addOnId == 'Cake') {
+            foreach ($xml->optiongroups->option as $option) {
+                /* @var $option SimpleXMLElement */
+                if ($option['option_id'] == 'cake_currentXenForoVersionId') {
+                    $option->default_value = $xenOptions->currentVersionId;
+                }
+            }
+        }
+
         /* @var $addOnModel \XenForo_Model_AddOn */
         $addOnModel = \XenForo_Model::create('XenForo_Model_AddOn');
 

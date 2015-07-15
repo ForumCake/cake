@@ -3,9 +3,9 @@ namespace Cake\Proxy;
 
 if (false) {
 
-	class XFCP_XenForo_DataWriter_AddOn extends \XenForo_DataWriter_AddOn
-	{
-	}
+    class XFCP_XenForo_DataWriter_AddOn extends \XenForo_DataWriter_AddOn
+    {
+    }
 }
 
 class XenForo_DataWriter_AddOn extends XFCP_XenForo_DataWriter_AddOn
@@ -19,7 +19,9 @@ class XenForo_DataWriter_AddOn extends XFCP_XenForo_DataWriter_AddOn
             $cakeAddOns = $this->_getAddOnModel()->getCakeAddOns();
 
             if ($cakeAddOns) {
-                $this->error(new \XenForo_Phrase('cake_this_add_on_cannot_be_uninstalled_while_one_or_more_add_ons_with_cake_modules_installed'));
+                $this->error(
+                    new \XenForo_Phrase(
+                        'cake_this_add_on_cannot_be_uninstalled_while_one_or_more_add_ons_with_cake_modules_installed'));
             }
         }
     }
@@ -28,7 +30,7 @@ class XenForo_DataWriter_AddOn extends XFCP_XenForo_DataWriter_AddOn
     {
         parent::_postSave();
 
-        if ($this->isChanged('active') && !$this->get('active')) {
+        if ($this->get('addon_id') == 'Cake' && $this->isChanged('active') && !$this->get('active')) {
             $cakeAddOns = $this->_getAddOnModel()->getCakeAddOns();
             foreach ($cakeAddOns as $addOnId) {
                 if ($addOnId != $this->get('addon_id')) {

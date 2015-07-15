@@ -18,7 +18,8 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
 
         if ($response instanceof \XenForo_ControllerResponse_View) {
 
-            $response->params['addOns'] = $this->_getAddOnModel()->prepareCakeAddOns($response->params['addOns'], true, true);
+            $response->params['addOns'] = $this->_getAddOnModel()->prepareCakeAddOns($response->params['addOns'], true,
+                true);
         }
 
         return $response;
@@ -165,7 +166,8 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
             }
 
             if (count($installedModules) == 1) {
-                return $this->responseError(new \XenForo_Phrase('cake_it_is_not_possible_to_uninstall_the_only_installed_module'));
+                return $this->responseError(
+                    new \XenForo_Phrase('cake_it_is_not_possible_to_uninstall_the_only_installed_module'));
             }
 
             $addOnModel->uninstallModule($addOn, $moduleName);
@@ -208,7 +210,7 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
                     )));
         } else {
             $viewParams = array(
-                'addOn' => $addOn,
+                'addOn' => $addOn
             );
 
             return $this->responseView('ViewAdmin_AddOn_Modules_Rebuild', 'cake_addon_rebuild', $viewParams);
@@ -283,5 +285,30 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
                 array(
                     'addon_id' => $addOnId
                 )));
+    }
+
+    public function actionRebuildCakeAddOns()
+    {
+        $xenOptions = \XenForo_Application::getOptions();
+
+        $dw = \XenForo_DataWriter::create('XenForo_DataWriter_Option');
+        $dw->setExistingData('cake_currentXenForoVersionId');
+        $dw->set('option_value', $xenOptions->currentVersionId);
+        $dw->save();
+
+        /* @var $modificationModel XenForo_Model_TemplateModification */
+        $modificationModel = $this->getModelFromCache('XenForo_Model_TemplateModification');
+        $modificationModel->rebuildCakeTemplatesAfterUpgrade();
+
+        /* @var $modificationModel XenForo_Model_AdminTemplateModification */
+        $modificationModel = $this->getModelFromCache('XenForo_Model_AdminTemplateModification');
+        $modificationModel->rebuildCakeTemplatesAfterUpgrade();
+
+        /* @var $modificationModel XenForo_Model_EmailTemplateModification */
+        $modificationModel = $this->getModelFromCache('XenForo_Model_EmailTemplateModification');
+        $modificationModel->rebuildCakeTemplatesAfterUpgrade();
+
+        return $this->responseRedirect(\XenForo_ControllerResponse_Redirect::SUCCESS,
+            \XenForo_Link::buildAdminLink('index'));
     }
 }

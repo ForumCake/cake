@@ -9,8 +9,8 @@
     <template title="cake_addon_list.css"><![CDATA[.prefix.forumCakePrefix
 {
 	color: black;
-	background-color: skyblue;
-	border-color: skyblue;
+	background-color: #C6DFD6;
+	border-color: #C6DFD6;
 	font-weight: normal;
 }
 
@@ -285,6 +285,15 @@ ${1}{xen:if {$addOn.prefix}, '{xen:raw $forumCakePrefix}{$addOn.prefix}</span>'}
 <xen:link href="{xen:adminlink 'add-ons/modules', $addOn}" displayif="{$addOn.moduleCount}">{xen:phrase cake_modules} ({$addOn.moduleCount})</xen:link>
 ${4}]]></replace>
     </modification>
+    <modification template="content_header" modification_key="cake_contentHeader" description="" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#^#]]></find>
+      <replace><![CDATA[<xen:if is="{$xenOptions.cake_currentXenForoVersionId} != {$xenOptions.currentVersionId}">
+	<p class="importantMessage">
+		{xen:phrase cake_xenforo_has_been_upgraded} <br />
+		<a href="{xen:adminlink add-ons/rebuild-cake-add-ons}">{xen:phrase cake_rebuild_add_ons}</a>
+	</p>
+</xen:if>]]></replace>
+    </modification>
     <modification template="option_list" modification_key="cake_optionList" description="" execution_order="10" enabled="1" action="preg_replace">
       <find><![CDATA[#<xen:foreach loop="\$renderedOptions"#Us]]></find>
       <replace><![CDATA[<xen:include template="cake_option_list" />
@@ -300,11 +309,13 @@ ${0}]]></replace>
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_DataWriter_AddOn" description=""/>
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_DataWriter_Template" description=""/>
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_DataWriter_AdminTemplate" description=""/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_Cron" description=""/>
     <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_AdminTemplate" description=""/>
     <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_TemplateModification" description=""/>
     <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_AdminTemplateModification" description=""/>
     <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_AddOn" description=""/>
     <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_AdminNavigation" description=""/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_EmailTemplateModification" description=""/>
     <listener event_id="load_class_route_prefix" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Route_PrefixAdmin_Options" description=""/>
   </code_event_listeners>
   <cron/>
@@ -312,6 +323,12 @@ ${0}]]></replace>
   <email_template_modifications/>
   <optiongroups>
     <group group_id="cake" display_order="5" debug_only="0"/>
+    <option option_id="cake_currentXenForoVersionId" edit_format="callback" data_type="positive_integer" can_backup="1">
+      <default_value>1000011</default_value>
+      <edit_format_params>Cake\Option_DebugOnly::renderTextbox</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="cake" display_order="0"/>
+    </option>
   </optiongroups>
   <permissions>
     <permission_groups/>
@@ -342,6 +359,7 @@ ${0}]]></replace>
     <phrase title="cake_please_confirm_uninstall_following_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Please confirm you want to uninstall the following module]]></phrase>
     <phrase title="cake_rebuild" version_id="1000033" version_string="1.0.0 Alpha 4"><![CDATA[Rebuild]]></phrase>
     <phrase title="cake_rebuild_add_on" version_id="1000033" version_string="1.0.0 Alpha 4"><![CDATA[Rebuild Add-on]]></phrase>
+    <phrase title="cake_rebuild_add_ons" version_id="1000034" version_string="1.0.0 Alpha 5"><![CDATA[Rebuild Add-ons]]></phrase>
     <phrase title="cake_revert_to_default" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Revert to Default]]></phrase>
     <phrase title="cake_set_as_default" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Set as Default]]></phrase>
     <phrase title="cake_there_modules_that_may_be_outdated_click_to_rebuild" version_id="1000033" version_string="1.0.0 Alpha 4"><![CDATA[There are modules that may be outdated. Click to rebuild.]]></phrase>
@@ -349,8 +367,11 @@ ${0}]]></replace>
     <phrase title="cake_this_add_on_has_no_modules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[This add-on has no modules.]]></phrase>
     <phrase title="cake_uninstallation_requires_the_cake_addon_to_be_enabled" version_id="1000034" version_string="1.0.0 Alpha 5"><![CDATA[Uninstallation requires the Cake add-on to be enabled.]]></phrase>
     <phrase title="cake_uninstall_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Uninstall Module]]></phrase>
+    <phrase title="cake_xenforo_has_been_upgraded" version_id="1000034" version_string="1.0.0 Alpha 5"><![CDATA[Your XenForo installation has recently been upgraded. Your Cake add-ons need rebuilding.]]></phrase>
     <phrase title="cake_x_of_y_modules_active" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[{active} of {total} modules active]]></phrase>
     <phrase title="cake_you_must_upload_at_least_one_module" version_id="1000034" version_string="1.0.0 Alpha 5"><![CDATA[You must upload at least one module.]]></phrase>
+    <phrase title="option_cake_currentXenForoVersionId" version_id="1000034" version_string="1.0.0 Alpha 5"><![CDATA[Current XenForo Version ID]]></phrase>
+    <phrase title="option_cake_currentXenForoVersionId_explain" version_id="1000034" version_string="1.0.0 Alpha 5"><![CDATA[]]></phrase>
     <phrase title="option_group_cake" version_id="1000030" version_string="1.0.0 Alpha 1"><![CDATA[Cake Options]]></phrase>
     <phrase title="option_group_cake_description" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Options for all Cake add-ons and modules.]]></phrase>
   </phrases>

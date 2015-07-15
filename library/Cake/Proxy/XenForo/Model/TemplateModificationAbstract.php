@@ -31,4 +31,21 @@ trait XenForo_Model_TemplateModificationAbstract
 
         return $modifications;
     }
+
+    public function getModificationTemplateTitlesForCakeAddons()
+    {
+        $db = $this->_getDb();
+
+        /* @var $addOnModel XenForo_Model_AddOn */
+        $addOnModel = $this->getModelFromCache('XenForo_Model_AddOn');
+
+        $addOnIds = $addOnModel->getCakeAddOns();
+
+        return $db->fetchCol(
+            '
+                SELECT DISTINCT template
+                FROM ' . $this->_modTableName . '
+                WHERE addon_id IN (' . $db->quote($addOnIds) . ')
+    	    ');
+    }
 }
