@@ -228,6 +228,10 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
 
         $modules = \Cake\Proxy::getOptionValue('modules', $addOnId);
 
+        if (!is_array($modules)) {
+            return false;
+        }
+
         $modules[$moduleName] = 1;
 
         $dw = \XenForo_DataWriter::create('XenForo_Datawriter_Option');
@@ -237,6 +241,8 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
         $dw->save();
 
         \XenForo_Application::getOptions()->set($preOption . '_modules', $modules);
+
+        return true;
     }
 
     public function uninstallModule(array $addOn, $moduleName)

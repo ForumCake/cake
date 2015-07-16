@@ -21,7 +21,7 @@ trait XenForo_Model_TemplateModificationAbstract
 
                         $activeModules = \Cake\Proxy::getOptionValue('modules', $addOnId);
 
-                        if (empty($activeModules[$moduleName])) {
+                        if (is_array($activeModules) && empty($activeModules[$moduleName])) {
                             unset($modifications[$key]);
                         }
                     }
