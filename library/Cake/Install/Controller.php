@@ -24,12 +24,40 @@ class Install_Controller
 
         $namespace = str_replace('_', '\\', $addOnData['addon_id']);
 
-        self::_updateCodeEventListeners($addOnData['addon_id'], $xml);
+        self::_preInstall($existingAddOn, $addOnData, $xml);
 
         self::_install($namespace, $existingAddOn, $addOnData, $xml);
     }
 
-    protected static function _updateCodeEventListeners($addOnId, \SimpleXMLElement $xml)
+    protected static function _preInstall($existingAddOn, array $addOnData, \SimpleXMLElement $xml)
+    {
+        $addOnId = $addOnData['addon_id'];
+
+        self::_preInstallOptions($addOnId, $xml->optiongroups);
+        self::_preInstallCodeEventListeners($addOnId, $xml->code_event_listeners);
+    }
+
+    protected static function _preInstallOptions($addOnId, $xml)
+    {
+        $xenOptions = \XenForo_Application::getOptions();
+
+        $options = array();
+        $xmlOptions = \XenForo_Helper_DevelopmentXml::fixPhpBug50670($xml->option);
+        foreach ($xmlOptions as $option) {
+            $optionId = (string) $option['option_id'];
+            if ($xenOptions->get($optionId) === null) {
+                if ($option['data_type'] == 'array') {
+                    $value = @unserialize((string) $option->default_value);
+                } else {
+                    $value = (string) $option->default_value;
+                }
+                $options[$optionId] = $value;
+                \XenForo_Application::getOptions()->set($optionId, $value);
+            }
+        }
+    }
+
+    protected static function _preInstallCodeEventListeners($addOnId, $xml)
     {
         /* @var $codeEventModel XenForo_Model_CodeEvent */
         $codeEventModel = \XenForo_Model::create('XenForo_Model_CodeEvent');
