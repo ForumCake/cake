@@ -223,7 +223,7 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
         $addOn = $this->_getAddOnOrError($addOnId);
 
         if ($this->isConfirmedPost()) {
-            $dw = \XenForo_DataWriter::create('XenForo_Datawriter_Option');
+            $dw = \XenForo_DataWriter::create('XenForo_DataWriter_Option');
             $preOption = \Cake\Helper_String::pascalCaseToCamelCase($addOnId);
             $dw->setExistingData($preOption . '_modules');
             $dw->set('option_value', $dw->get('default_value'));
@@ -270,7 +270,7 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
                 'array' => true
             ));
 
-        $dw = \XenForo_DataWriter::create('XenForo_Datawriter_Option');
+        $dw = \XenForo_DataWriter::create('XenForo_DataWriter_Option');
         $preOption = \Cake\Helper_String::pascalCaseToCamelCase($addOnId);
         $dw->setExistingData($preOption . '_modules');
         $dw->set('option_value', $ids);

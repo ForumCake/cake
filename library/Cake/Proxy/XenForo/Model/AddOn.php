@@ -234,7 +234,7 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
 
         $modules[$moduleName] = 1;
 
-        $dw = \XenForo_DataWriter::create('XenForo_Datawriter_Option');
+        $dw = \XenForo_DataWriter::create('XenForo_DataWriter_Option');
         $preOption = \Cake\Helper_String::pascalCaseToCamelCase($addOnId);
         $dw->setExistingData($preOption . '_modules');
         $dw->set('option_value', $modules);
@@ -298,7 +298,7 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
 
         unset($modules[$moduleName]);
 
-        $dw = \XenForo_DataWriter::create('XenForo_Datawriter_Option');
+        $dw = \XenForo_DataWriter::create('XenForo_DataWriter_Option');
         $preOption = \Cake\Helper_String::pascalCaseToCamelCase($addOnId);
         $dw->setExistingData($preOption . '_modules');
         $dw->set('option_value', $modules);
