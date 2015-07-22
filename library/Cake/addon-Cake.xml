@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="Cake" title="Cake" version_string="1.0.0 Alpha 6" version_id="1000035" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="Cake\Install_Controller" uninstall_callback_method="uninstall">
+<addon addon_id="Cake" title="Cake" version_string="1.0.0 Alpha 7" version_id="1000036" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="Cake\Install_Controller" uninstall_callback_method="uninstall">
   <admin_navigation>
     <navigation navigation_id="addOnModules" parent_navigation_id="addOns" display_order="15" link="add-ons/modules" admin_permission_id="addOn" debug_only="0" hide_no_children="0"/>
   </admin_navigation>
@@ -316,6 +316,7 @@ ${0}]]></replace>
     <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_AddOn" description=""/>
     <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_AdminNavigation" description=""/>
     <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_EmailTemplateModification" description=""/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Model_BbCode" description=""/>
     <listener event_id="load_class_route_prefix" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Route_PrefixAdmin_Options" description=""/>
   </code_event_listeners>
   <cron/>
@@ -333,7 +334,12 @@ ${0}]]></replace>
   <permissions>
     <permission_groups/>
     <permissions/>
-    <interface_groups/>
+    <interface_groups>
+      <interface_group interface_group_id="cakeForumModeratorPermissions" display_order="13"/>
+      <interface_group interface_group_id="cakeForumPermissions" display_order="12"/>
+      <interface_group interface_group_id="cakeGeneralModeratorPermissions" display_order="6"/>
+      <interface_group interface_group_id="cakeGeneralPermissions" display_order="2"/>
+    </interface_groups>
   </permissions>
   <phrases>
     <phrase title="admin_navigation_addOnModules" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Enable/Disable Modules]]></phrase>
@@ -372,8 +378,14 @@ ${0}]]></replace>
     <phrase title="cake_you_must_upload_at_least_one_module" version_id="1000034" version_string="1.0.0 Alpha 5"><![CDATA[You must upload at least one module.]]></phrase>
     <phrase title="option_cake_currentXenForoVersionId" version_id="1000035" version_string="1.0.0 Alpha 6"><![CDATA[Current XenForo Version ID]]></phrase>
     <phrase title="option_cake_currentXenForoVersionId_explain" version_id="1000035" version_string="1.0.0 Alpha 6"><![CDATA[]]></phrase>
+    <phrase title="option_cake_modules" version_id="1000036" version_string="1.0.0 Alpha 7"><![CDATA[Enabled Modules]]></phrase>
+    <phrase title="option_cake_modules_explain" version_id="1000036" version_string="1.0.0 Alpha 7"><![CDATA[This option can't be edited manually. It is edited only via the <a href="admin.php?add-ons/{addOnId}/modules">Modules</a> page.]]></phrase>
     <phrase title="option_group_cake" version_id="1000030" version_string="1.0.0 Alpha 1"><![CDATA[Cake Options]]></phrase>
     <phrase title="option_group_cake_description" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[Options for all Cake add-ons and modules.]]></phrase>
+    <phrase title="permission_interface_cakeForumModeratorPermissions" version_id="1000036" version_string="1.0.0 Alpha 7"><![CDATA[Cake Forum Moderator Permissions]]></phrase>
+    <phrase title="permission_interface_cakeForumPermissions" version_id="1000036" version_string="1.0.0 Alpha 7"><![CDATA[Cake Forum Permissions]]></phrase>
+    <phrase title="permission_interface_cakeGeneralModeratorPermissions" version_id="1000036" version_string="1.0.0 Alpha 7"><![CDATA[Cake General Moderator Permissions]]></phrase>
+    <phrase title="permission_interface_cakeGeneralPermissions" version_id="1000036" version_string="1.0.0 Alpha 7"><![CDATA[Cake General Permissions]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>

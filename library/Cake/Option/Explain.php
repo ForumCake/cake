@@ -16,6 +16,16 @@ class Option_Explain
     public static function render(\XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
     {
         if (\XenForo_Application::debugMode()) {
+            $parts = explode('_', $preparedOption['option_id']);
+
+            $optionName = array_pop($parts);
+
+            $preparedOption['title'] = new \XenForo_Phrase('option_cake_' . $optionName);
+            $preparedOption['explain'] = new \XenForo_Phrase('option_cake_' . $optionName . '_explain',
+                array(
+                    'addOnId' => $preparedOption['addon_id']
+                ));
+
             return \XenForo_ViewAdmin_Helper_Option::renderOptionTemplateInternal('cake_option_template_explain', $view,
                 $fieldPrefix, $preparedOption, $canEdit);
         }

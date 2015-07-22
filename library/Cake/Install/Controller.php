@@ -24,7 +24,30 @@ class Install_Controller
 
         $namespace = str_replace('_', '\\', $addOnData['addon_id']);
 
+        self::_updateCodeEventListeners($addOnData['addon_id'], $xml);
+
         self::_install($namespace, $existingAddOn, $addOnData, $xml);
+    }
+
+    protected static function _updateCodeEventListeners($addOnId, \SimpleXMLElement $xml)
+    {
+        /* @var $codeEventModel XenForo_Model_CodeEvent */
+        $codeEventModel = \XenForo_Model::create('XenForo_Model_CodeEvent');
+
+        $codeEventModel->deleteEventListenersForAddOn($addOnId);
+
+        $cache = $codeEventModel->getEventListenerArray();
+
+        $xmlListeners = \XenForo_Helper_DevelopmentXml::fixPhpBug50670($xml->listener);
+        foreach ($xmlListeners as $listener) {
+            $hint = $listener['hint'] ? (string) $listener['hint'] : '_';
+            $cache[(string) $listener['event_id']][$hint][] = array(
+                (string) $listener['callback_class'],
+                (string) $listener['callback_method']
+            );
+        }
+
+        \XenForo_CodeEvent::setListeners($cache, false);
     }
 
     protected static function _install($namespace, $existingAddOn, array $addOnData, \SimpleXMLElement $xml)
