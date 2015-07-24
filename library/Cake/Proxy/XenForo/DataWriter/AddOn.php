@@ -42,4 +42,18 @@ class XenForo_DataWriter_AddOn extends XFCP_XenForo_DataWriter_AddOn
             }
         }
     }
+
+    protected function _postDelete()
+    {
+        parent::_postDelete();
+
+        if ($this->get('addon_id') == 'Cake') {
+            return;
+        }
+
+        $this->_db->query('
+            DELETE FROM cake_module
+            WHERE addon_id = ?
+        ', $this->get('addon_id'));
+    }
 }

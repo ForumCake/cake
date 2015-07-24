@@ -44,22 +44,6 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
         parent::importAddOnExtraDataFromXml($xml, $addOnId);
     }
 
-    public function deleteAddOnMasterData($addOnId)
-    {
-        parent::deleteAddOnMasterData($addOnId);
-
-        if ($addOnId == 'Cake') {
-            return;
-        }
-
-        $db = $this->_getDb();
-
-        $db->query('
-            DELETE FROM cake_module
-            WHERE addon_id = ?
-        ', $addOnId);
-    }
-
     public function getAddOnsWithIdPrefix($prefix)
     {
         return $this->fetchAllKeyed(
