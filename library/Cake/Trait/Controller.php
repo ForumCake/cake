@@ -38,6 +38,23 @@ trait Trait_Controller
         return parent::_getToggleResponse($items, $dwName, $redirectTarget, $activeFieldName, $idPrefix);
     }
 
+    public function getHelper($class)
+    {
+        if (strpos($class, '_') === false || (strlen($class) > 4 && substr($class, 4) == 'ControllerHelper')) {
+            $calledClass = get_called_class();
+
+            $backslash = strrpos($calledClass, '\\');
+            if ($backslash !== false) {
+                $namespace = substr($calledClass, 0, $backslash);
+                $class = $namespace . '\\' . $class;
+            }
+        }
+
+        $class = \XenForo_Application::resolveDynamicClass($class);
+
+        return new $class($this);
+    }
+
     public function responseView($viewName = '', $templateName = '', array $params = array(), array $containerParams = array())
     {
         if (strpos($viewName, '_') === false || (strlen($viewName) > 4 && substr($viewName, 4) == 'View')) {
