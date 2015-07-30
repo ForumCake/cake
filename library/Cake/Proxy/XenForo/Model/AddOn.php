@@ -33,9 +33,15 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
                 $appendXml = \XenForo_Helper_DevelopmentXml::scanFile($filename);
                 foreach ($appendXml->children() as $child) {
                     $elementName = $child->getName();
-                    foreach ($child->children() as $childChild) {
-                        $childChild->addAttribute('module_name_cake', $moduleName);
-                        \Cake\Helper_Xml::appendXml($xml->$elementName, $childChild);
+                    foreach ($child->children() as $grandChild) {
+                        if (!$child->attributes()->count()) {
+                            foreach ($grandChild->children() as $greatGrandChild) {
+                                $greatGrandChild->addAttribute('module_name_cake', $moduleName);
+                            }
+                        } else {
+                            $grandChild->addAttribute('module_name_cake', $moduleName);
+                        }
+                        \Cake\Helper_Xml::appendXml($xml->$elementName, $grandChild);
                     }
                 }
             }

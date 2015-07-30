@@ -6,13 +6,19 @@ class Helper_Xml
 
     public static function appendXml(\SimpleXMLElement $element1, \SimpleXMLElement $element2)
     {
-        // TODO check for empty $element1 and skip if necessary
+        foreach ($element1->children() as $child) {
+            $attributes = $child->attributes();
+            if ($child->getName() == $element2->getName() && !$child->attributes()->count()) {
+                $xml = $child;
+                break;
+            }
+        }
 
-        $xml = $element1->addChild($element2->getName());
+        if (!isset($xml)) {
+            $xml = $element1->addChild($element2->getName());
+        }
 
-        if (strlen(trim((string) $element2)) == 0) {
-            // do nothing
-        } else {
+        if (strlen(trim((string) $element2))) {
             $node = dom_import_simplexml($xml);
             $document = $node->ownerDocument;
             $node->appendChild($document->createCDATASection($element2));
