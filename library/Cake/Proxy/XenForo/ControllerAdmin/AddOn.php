@@ -59,7 +59,7 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
         foreach ($modules as $moduleName => $versionId) {
             $installed = isset($installedModules[$moduleName]);
             if ($installed) {
-                $outdated = $installedModules[$moduleName]['version_id'] != $versionId;
+                $outdated = $installedModules[$moduleName]['version_id'] < $versionId;
                 if ($outdated) {
                     $outdatedModules[] = $moduleName;
                 }
@@ -76,7 +76,6 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
                 $availableModules[$moduleName] = $module;
             }
         }
-
         $viewParams = array(
             'addOn' => $addOn,
             'installedModules' => $installedModules,
