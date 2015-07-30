@@ -34,7 +34,7 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
                 foreach ($appendXml->children() as $child) {
                     $elementName = $child->getName();
                     foreach ($child->children() as $grandChild) {
-                        if (!$child->attributes()->count()) {
+                        if (!$grandChild->attributes()->count()) {
                             foreach ($grandChild->children() as $greatGrandChild) {
                                 $greatGrandChild->addAttribute('module_name_cake', $moduleName);
                             }
