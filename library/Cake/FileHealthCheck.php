@@ -27,6 +27,13 @@ class FileHealthCheck
             if ($addOnCheck instanceof Install_FileHealthCheckBase) {
                 $hashes = array_merge($hashes, $addOnCheck->getFileHashes());
 
+                $installData = \Cake\Install_DataAbstract::createForAddOnId($addOnId);
+
+                $modules = array();
+                if ($installData) {
+                    $modules = $installData->getModules();
+                }
+
                 $moduleNames = array_keys($modules);
 
                 foreach ($moduleNames as $moduleName) {
