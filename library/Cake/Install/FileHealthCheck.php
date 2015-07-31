@@ -7,7 +7,7 @@ class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
     public function getFileHashes()
     {
         return array(
-        	'library/Cake/addon-Cake.xml' => '17e0d1bcc2c630f8b42f83863fbdc279',
+        	'library/Cake/addon-Cake.xml' => '594051cd6a4d805edec1be3f45c12d11',
         	'library/Cake/Admin.php' => 'acfcb19ec9fe6badaa909dc6f76bfa30',
         	'library/Cake/FileHealthCheck.php' => 'daa4914163e561e125958d2d509b6d08',
         	'library/Cake/Helper/Array.php' => '8faf05a03198ed9edf4b04d864d2c045',
@@ -18,9 +18,9 @@ class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
         	'library/Cake/Helper/MySql.php' => '3dcbadb0bc027c22865ec7734274babb',
         	'library/Cake/Helper/String.php' => '10d9ec73793edaf8fc212e5bbe3b6526',
         	'library/Cake/Helper/Xml.php' => 'f3a2ac470c6ba1b9614422393cfebe73',
-        	'library/Cake/Install/Controller.php' => 'fb16e73c5677c00cf4aae364cfb441b4',
+        	'library/Cake/Install/Controller.php' => 'b4163149ddd33d211a9ababab49d67db',
         	'library/Cake/Install/Data.php' => 'dcaaec834482cc49017f69e535549dc4',
-        	'library/Cake/Install/DataAbstract.php' => '56241284613f73e3b3f1b74415234963',
+        	'library/Cake/Install/DataAbstract.php' => 'cf99b38229daa3f8f3846651cb6a3450',
         	'library/Cake/Install/FileHealthCheckBase.php' => '457e1e6429b79dfc170a3ef2df87e55f',
         	'library/Cake/Option/DebugOnly.php' => '68d60ed60d61f67c3eda7492bb7e1c2d',
         	'library/Cake/Option/Explain.php' => 'ea5ddf0976ba072587e404fe1ad3b75c',
@@ -29,7 +29,7 @@ class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
         	'library/Cake/Proxy/XenForo/DataWriter/AddOn.php' => '0afff65b015619270735821c0e2c11d2',
         	'library/Cake/Proxy/XenForo/DataWriter/AdminTemplate.php' => 'abaa2a78d35f445674df1115bca87dc0',
         	'library/Cake/Proxy/XenForo/DataWriter/Template.php' => '3a95f636211687a7d3463f74db407b66',
-        	'library/Cake/Proxy/XenForo/Model/AddOn.php' => '2d4bb4f5a9163a80442f4cb74e02d5f6',
+        	'library/Cake/Proxy/XenForo/Model/AddOn.php' => 'a8734471baec45e12c562185b72aa2b1',
         	'library/Cake/Proxy/XenForo/Model/AdminNavigation.php' => 'ba497a97dcef960e659227395f449293',
         	'library/Cake/Proxy/XenForo/Model/AdminTemplate.php' => 'd392b02ee1f808352c04d62fb9d7fdba',
         	'library/Cake/Proxy/XenForo/Model/AdminTemplateModification.php' => 'd8f25e71861e857ddd7af5cd8e06437f',

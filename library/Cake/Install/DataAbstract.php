@@ -97,6 +97,34 @@ abstract class Install_DataAbstract
     {
     }
 
+    public function preInstall($fileHealthCheck = true)
+    {
+        if ($fileHealthCheck) {
+            $hashes = array();
+            FileHealthCheck::getFileHashes($hashes);
+
+            $errors = \XenForo_Helper_Hash::compareHashes($hashes);
+
+            if ($errors) {
+                $error = new \XenForo_Phrase('cake_uploaded_files_do_not_contain_expected_contents');
+                $error = $error->render(false);
+                if (!$error) {
+                    $error = 'Uploaded files do not contain expected contents.';
+                }
+                throw new \XenForo_Exception($error, true);
+            }
+        }
+
+        $this->_preInstall();
+    }
+
+    /**
+     * Method designed to be overridden by child classes.
+     */
+    protected function _preInstall()
+    {
+    }
+
     public function postInstall()
     {
         $this->_postInstall();
@@ -130,6 +158,34 @@ abstract class Install_DataAbstract
      * Method designed to be overridden by child classes.
      */
     protected function _uninstall()
+    {
+    }
+
+    public function preUninstall($fileHealthCheck = true)
+    {
+        if ($fileHealthCheck) {
+            $hashes = array();
+            FileHealthCheck::getFileHashes($hashes);
+
+            $errors = \XenForo_Helper_Hash::compareHashes($hashes);
+
+            if ($errors) {
+                $error = new \XenForo_Phrase('cake_uploaded_files_do_not_contain_expected_contents');
+                $error = $error->render(false);
+                if (!$error) {
+                    $error = 'Uploaded files do not contain expected contents.';
+                }
+                throw new \XenForo_Exception($error, true);
+            }
+        }
+
+        $this->_preUninstall();
+    }
+
+    /**
+     * Method designed to be overridden by child classes.
+     */
+    protected function _preUninstall()
     {
     }
 

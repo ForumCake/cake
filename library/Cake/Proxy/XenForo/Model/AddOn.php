@@ -168,6 +168,8 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
 
         $installData = \Cake\Install_DataAbstract::createForModule($addOnId, $moduleName);
 
+        $installData->preInstall();
+
         \XenForo_Db::beginTransaction($db);
 
         $libraryDir = \XenForo_Autoloader::getInstance()->getRootDir() . DIRECTORY_SEPARATOR;
@@ -242,6 +244,8 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
         $addOnId = $addOn['addon_id'];
 
         $installData = \Cake\Install_DataAbstract::createForModule($addOnId, $moduleName);
+
+        $installData->preUninstall();
 
         \XenForo_Db::beginTransaction($db);
 

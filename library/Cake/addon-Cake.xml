@@ -383,6 +383,7 @@ ${0}]]></replace>
     <phrase title="cake_uninstall_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Uninstall Module]]></phrase>
     <phrase title="cake_uploaded_files_do_not_contain_expected_contents" version_id="1000039" version_string="1.0.0 Alpha 10"><![CDATA[Uploaded files do not contain expected contents.]]></phrase>
     <phrase title="cake_xenforo_has_been_upgraded" version_id="1000035" version_string="1.0.0 Alpha 6"><![CDATA[Your XenForo installation has recently been upgraded. Your Cake add-ons need rebuilding.]]></phrase>
+    <phrase title="cake_xml_file_does_not_match_uploaded_files" version_id="1000039" version_string="1.0.0 Alpha 10"><![CDATA[XML file does not match uploaded files.]]></phrase>
     <phrase title="cake_x_of_y_modules_active" version_id="1000031" version_string="1.0.0 Alpha 2"><![CDATA[{active} of {total} modules active]]></phrase>
     <phrase title="cake_you_must_upload_at_least_one_module" version_id="1000034" version_string="1.0.0 Alpha 5"><![CDATA[You must upload at least one module.]]></phrase>
     <phrase title="option_cake_currentXenForoVersionId" version_id="1000035" version_string="1.0.0 Alpha 6"><![CDATA[Current XenForo Version ID]]></phrase>

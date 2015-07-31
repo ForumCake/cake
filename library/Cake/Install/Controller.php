@@ -36,16 +36,21 @@ class Install_Controller
         self::_preInstallOptions($addOnId, $xml->optiongroups);
         self::_preInstallCodeEventListeners($addOnId, $xml->code_event_listeners);
 
-        $hashes = array();
-        FileHealthCheck::getFileHashes($hashes);
+        $fileName = 'library/' . str_replace('_', '/', $addOnId) . '/addon-' . $addOnId . '.xml';
 
-        $errors = \XenForo_Helper_Hash::compareHashes($hashes);
+        try {
+            $xmlCheck = \XenForo_Helper_DevelopmentXml::scanFile($fileName);
+        } catch (\Exception $e) {
+            throw new \XenForo_Exception(new \XenForo_Phrase('provided_file_was_not_valid_xml_file'), true);
+        }
 
-        if ($errors) {
-            $error = new \XenForo_Phrase('cake_uploaded_files_do_not_contain_expected_contents');
+        if ($addOnData['addon_id'] != (string) $xmlCheck['addon_id'] ||
+             $addOnData['version_id'] != (string) $xmlCheck['version_id'] ||
+             $addOnData['version_string'] != (string) $xmlCheck['version_string']) {
+            $error = new \XenForo_Phrase('cake_xml_file_does_not_match_uploaded_files');
             $error = $error->render(false);
             if (!$error) {
-                $error = 'Uploaded files do not contain expected contents.';
+                $error = 'XML file does not match uploaded files.';
             }
             throw new \XenForo_Exception($error, true);
         }
@@ -119,11 +124,15 @@ class Install_Controller
             $moduleName = substr($namespace, strlen($addOnNamespace) + 1);
 
             if ($moduleName) {
+                $installData->preInstall(false);
+
                 $installData->install();
 
                 $installData->installModule($addOnId, $moduleName);
             } else {
                 // TODO allow modules inside modules?
+
+                $installData->preInstall();
 
                 if ($existingAddOn) {
                     $installedModules = $addOnModel->getInstalledModulesForAddOn($addOnId);
@@ -180,6 +189,8 @@ class Install_Controller
             $moduleName = substr($namespace, strlen($addOnNamespace) + 1);
 
             if (!$moduleName) {
+                $installData->preUninstall();
+
                 if (!method_exists($addOnModel, 'getInstalledModulesForAddOn')) {
                     $error = new \XenForo_Phrase('cake_uninstallation_requires_the_cake_addon_to_be_enabled');
                     $error = $error->render(false);
@@ -201,6 +212,8 @@ class Install_Controller
                     }
                     self::_uninstall($namespace . '\\' . $moduleName, $addOnData);
                 }
+            } else {
+                $installData->preUninstall(false);
             }
 
             $installData->uninstall();
