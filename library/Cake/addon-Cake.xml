@@ -325,7 +325,7 @@ ${0}]]></replace>
   <optiongroups>
     <group group_id="cake" display_order="5" debug_only="0"/>
     <option option_id="cake_currentXenForoVersionId" edit_format="callback" data_type="positive_integer" can_backup="1">
-      <default_value>1040870</default_value>
+      <default_value>1041070</default_value>
       <edit_format_params>Cake\Option_DebugOnly::renderTextbox</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="cake" display_order="0"/>
