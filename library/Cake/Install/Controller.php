@@ -35,6 +35,20 @@ class Install_Controller
 
         self::_preInstallOptions($addOnId, $xml->optiongroups);
         self::_preInstallCodeEventListeners($addOnId, $xml->code_event_listeners);
+
+        $hashes = array();
+        FileHealthCheck::getFileHashes($hashes);
+
+        $errors = \XenForo_Helper_Hash::compareHashes($hashes);
+
+        if ($errors) {
+            $error = new \XenForo_Phrase('cake_uploaded_files_do_not_contain_expected_contents');
+            $error = $error->render(false);
+            if (!$error) {
+                $error = 'Uploaded files do not contain expected contents.';
+            }
+            throw new \XenForo_Exception($error, true);
+        }
     }
 
     protected static function _preInstallOptions($addOnId, $xml)
