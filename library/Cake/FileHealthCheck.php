@@ -34,7 +34,7 @@ class FileHealthCheck
                         $namespace . '\\' . $moduleName . '\\Install_FileHealthCheck');
 
                     if ($moduleCheck instanceof Install_FileHealthCheckBase) {
-                        $hashes = array_merge($hashes, $addOnCheck->getFileHashes());
+                        $hashes = array_merge($hashes, $moduleCheck->getFileHashes());
                     }
                 }
             }

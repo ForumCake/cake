@@ -9,7 +9,7 @@ class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
         return array(
         	'library/Cake/addon-Cake.xml' => '594051cd6a4d805edec1be3f45c12d11',
         	'library/Cake/Admin.php' => 'acfcb19ec9fe6badaa909dc6f76bfa30',
-        	'library/Cake/FileHealthCheck.php' => 'daa4914163e561e125958d2d509b6d08',
+        	'library/Cake/FileHealthCheck.php' => '85f8eb7259a43355e8cd495d1e412713',
         	'library/Cake/Helper/Array.php' => '8faf05a03198ed9edf4b04d864d2c045',
         	'library/Cake/Helper/Controller.php' => '586ebc2b07257c9df07bb377c54956b0',
         	'library/Cake/Helper/DataWriter.php' => '39ec17c740938b8f599be63fa815cb60',
