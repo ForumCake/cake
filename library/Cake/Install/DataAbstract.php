@@ -194,7 +194,7 @@ abstract class Install_DataAbstract
         return array();
     }
 
-    public function getModules()
+    public function getModules($ignoreAddOns = true)
     {
         $calledClass = get_called_class();
 
@@ -217,12 +217,13 @@ abstract class Install_DataAbstract
                 if (!is_dir($path . $value)) {
                     continue;
                 }
-                if ($namespace == 'Cake') {
-                    if (file_exists($path . $value . DIRECTORY_SEPARATOR . 'addon-Cake_' . $value . '.xml')) {
+                $addOnXml = $path . $value . DIRECTORY_SEPARATOR . 'addon-' . $addOnId . '_' . $value . '.xml';
+                if ($addOnId == $namespace && $ignoreAddOns) {
+                    if (file_exists($addOnXml)) {
                         continue;
                     }
                 }
-                if (in_array($value, $nonModules)) {
+                if (in_array($value, $nonModules) && !($ignoreAddOns || file_exists($addOnXml))) {
                     continue;
                 }
                 $installData = \Cake\Install_DataAbstract::createForModule($addOnId, $value);
