@@ -33,6 +33,7 @@ class Install_Controller
     {
         $addOnId = $addOnData['addon_id'];
 
+        self::_preInstallAddOn($addOnId, $addOnData['version_id']);
         self::_preInstallOptions($addOnId, $xml->optiongroups);
         self::_preInstallCodeEventListeners($addOnId, $xml->code_event_listeners);
 
@@ -54,6 +55,15 @@ class Install_Controller
             }
             throw new \XenForo_Exception($error, true);
         }
+    }
+
+    protected static function _preInstallAddOn($addOnId, $versionId)
+    {
+        $addOns = \XenForo_Application::get('addOns');
+
+        $addOns[$addOnId] = $versionId;
+
+        \XenForo_Application::set('addOns', $addOns);
     }
 
     protected static function _preInstallOptions($addOnId, $xml)
@@ -189,7 +199,7 @@ class Install_Controller
             $moduleName = substr($namespace, strlen($addOnNamespace) + 1);
 
             if (!$moduleName) {
-                $installData->preUninstall();
+                $installData->preUninstall(false);
 
                 if (!method_exists($addOnModel, 'getInstalledModulesForAddOn')) {
                     $error = new \XenForo_Phrase('cake_uninstallation_requires_the_cake_addon_to_be_enabled');

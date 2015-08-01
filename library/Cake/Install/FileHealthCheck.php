@@ -18,7 +18,7 @@ class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
         	'library/Cake/Helper/MySql.php' => '3dcbadb0bc027c22865ec7734274babb',
         	'library/Cake/Helper/String.php' => '10d9ec73793edaf8fc212e5bbe3b6526',
         	'library/Cake/Helper/Xml.php' => 'f3a2ac470c6ba1b9614422393cfebe73',
-        	'library/Cake/Install/Controller.php' => '5ab84fdcb626a09b6a3181250113e213',
+        	'library/Cake/Install/Controller.php' => '3f2ded56e005d329c9b662377f04277c',
         	'library/Cake/Install/Data.php' => 'dcaaec834482cc49017f69e535549dc4',
         	'library/Cake/Install/DataAbstract.php' => 'cf99b38229daa3f8f3846651cb6a3450',
         	'library/Cake/Install/FileHealthCheckBase.php' => '457e1e6429b79dfc170a3ef2df87e55f',
