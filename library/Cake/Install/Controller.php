@@ -134,7 +134,7 @@ class Install_Controller
 
                 $installData->preInstall();
 
-                if ($existingAddOn) {
+                if ($existingAddOn && method_exists($addOnModel, 'getInstalledModulesForAddOn')) {
                     $installedModules = $addOnModel->getInstalledModulesForAddOn($addOnId);
                 }
 
