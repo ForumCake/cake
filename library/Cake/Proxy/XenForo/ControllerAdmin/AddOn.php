@@ -31,18 +31,40 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
 
         $addOnModel = $this->_getAddOnModel();
 
-        if (!$addOnId) {
-            $addOns = $addOnModel->getAllAddOns();
-            $addOns = $this->_getAddOnModel()->prepareCakeAddOns($addOns, true, true);
+        if ($addOnId) {
+            $addOn = $this->_getAddOnOrError($addOnId);
 
-            $viewParams = array(
-                'addOns' => $addOns
-            );
+            $viewParams = $this->_getModulesForAddOn($addOn);
 
-            return $this->responseView('Cake\ViewAdmin_AddOn_Modules_List', 'cake_addon_modules_list', $viewParams);
+            return $this->responseView('Cake\ViewAdmin_AddOn_Modules', 'cake_addon_modules', $viewParams);
         }
 
-        $addOn = $this->_getAddOnOrError($addOnId);
+        $addOns = $addOnModel->getAllAddOns();
+
+        $moduleCount = 0;
+
+        foreach ($addOns as $addOnId => $addOn) {
+            $modules = $this->_getModulesForAddOn($addOn);
+
+            $installedModules[$addOnId] = $modules['installedModules'];
+
+            $moduleCount += count($modules['installedModules']);
+        }
+
+        $viewParams = array(
+            'addOns' => $addOns,
+            'installedModules' => $installedModules,
+            'moduleCount' => $moduleCount
+        );
+
+        return $this->responseView('Cake\ViewAdmin_AddOn_Modules_List', 'cake_addon_modules_list', $viewParams);
+    }
+
+    protected function _getModulesForAddOn(array $addOn)
+    {
+        $addOnModel = $this->_getAddOnModel();
+
+        $addOnId = $addOn['addon_id'];
 
         $installData = \Cake\Install_DataAbstract::createForAddOnId($addOnId);
 
@@ -76,14 +98,12 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
                 $availableModules[$moduleName] = $module;
             }
         }
-        $viewParams = array(
+        return array(
             'addOn' => $addOn,
             'installedModules' => $installedModules,
             'availableModules' => $availableModules,
             'outdatedModules' => $outdatedModules
         );
-
-        return $this->responseView('Cake\ViewAdmin_AddOn_Modules', 'cake_addon_modules', $viewParams);
     }
 
     public function actionModulesinstall()
@@ -249,14 +269,6 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
         $this->_assertPostOnly();
 
         $addOnId = $this->_input->filterSingle('addon_id', \XenForo_Input::STRING);
-        $addOn = $this->_getAddOnOrError($addOnId);
-
-        $installData = \Cake\Install_DataAbstract::createForAddOnId($addOnId);
-
-        $modules = array();
-        if ($installData) {
-            $modules = $installData->getModules();
-        }
 
         $idExists = $this->_input->filterSingle('exists',
             array(
@@ -269,21 +281,74 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
                 'array' => true
             ));
 
-        $dw = \XenForo_DataWriter::create('XenForo_DataWriter_Option');
-        $preOption = \Cake\Helper_String::pascalCaseToCamelCase($addOnId);
-        $dw->setExistingData($preOption . '_modules');
-        $dw->set('option_value', $ids);
-        $dw->save();
+        if ($addOnId) {
+            $addOn = $this->_getAddOnOrError($addOnId);
 
-        \XenForo_Application::getOptions()->set($preOption . '_modules', $ids);
+            $this->_toggleModulesForAddOn($addOn, $idExists, $ids);
 
-        $this->_getAddOnModel()->rebuildAddOnCachesAfterActiveSwitch($addOn);
+            return $this->responseRedirect(\XenForo_ControllerResponse_Redirect::SUCCESS,
+                \XenForo_Link::buildAdminLink('add-ons/modules',
+                    array(
+                        'addon_id' => $addOnId
+                    )));
+        }
+
+        $addOnIds = array();
+        $addOnIdExists = array();
+        foreach (array_keys($idExists) as $fullModuleName) {
+            $underscore = strrpos($fullModuleName, '_');
+            $addOnId = substr($fullModuleName, 0, $underscore);
+            $moduleName = substr($fullModuleName, $underscore + 1);
+            $addOnIdExists[$addOnId][$moduleName] = 1;
+            if (!empty($ids[$fullModuleName])) {
+                $addOnIds[$addOnId][$moduleName] = 1;
+            } else {
+                $addOnIds[$addOnId][$moduleName] = 0;
+            }
+        }
+
+        $addOns = $this->_getAddOnModel()->getAllAddOns();
+
+        foreach ($addOns as $addOnId => $addOn) {
+            if (isset($addOnIdExists[$addOnId])) {
+                $this->_toggleModulesForAddOn($addOn, $addOnIdExists[$addOnId], $addOnIds[$addOnId]);
+            }
+        }
 
         return $this->responseRedirect(\XenForo_ControllerResponse_Redirect::SUCCESS,
-            \XenForo_Link::buildAdminLink('add-ons/modules',
-                array(
-                    'addon_id' => $addOnId
-                )));
+            \XenForo_Link::buildAdminLink('add-ons/modules'));
+    }
+
+    protected function _toggleModulesForAddOn(array $addOn, array $idExists, array $ids = array())
+    {
+        $addOnId = $addOn['addon_id'];
+
+        $installData = \Cake\Install_DataAbstract::createForAddOnId($addOnId);
+
+        $modules = array();
+        if ($installData) {
+            $modules = $installData->getModules();
+        }
+
+        $xenOptions = \XenForo_Application::getOptions();
+
+        $preOption = \Cake\Helper_String::pascalCaseToCamelCase($addOnId);
+        $optionName = $preOption . '_modules';
+
+        $existingValue = $xenOptions->$optionName;
+
+        $ids = array_filter($ids);
+
+        if ($existingValue != $ids) {
+            $dw = \XenForo_DataWriter::create('XenForo_DataWriter_Option');
+            $dw->setExistingData($optionName);
+            $dw->set('option_value', $ids);
+            $dw->save();
+
+            $xenOptions->set($optionName, $ids);
+
+            $this->_getAddOnModel()->rebuildAddOnCachesAfterActiveSwitch($addOn);
+        }
     }
 
     public function actionRebuildCakeAddOns()
