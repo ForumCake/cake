@@ -64,17 +64,7 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
     public function prepareCakeAddOns(array $addOns, $prefix = false, $count = false)
     {
         foreach ($addOns as $addOnId => &$addOn) {
-            if (strlen($addOnId) > 4 && substr($addOnId, 0, 4) == 'Cake') {
-                $addOn['title'] = new \XenForo_Phrase(\Cake\Helper_String::pascalCaseToCamelCase($addOnId));
-                $addOn['depth'] = 1;
-                if ($prefix) {
-                    $addOn['prefix'] = new \XenForo_Phrase('cake');
-                } else {
-                    $addOn['title'] = new \XenForo_Phrase('cake_addon_title_x', array(
-                        'title' => $addOn['title']
-                    ));
-                }
-            }
+            $addOn = $this->prepareCakeAddOn($addOn, $prefix);
 
             if ($count) {
                 $installData = \Cake\Install_DataAbstract::createForAddOnId($addOnId);
@@ -92,6 +82,25 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
         }
 
         return $addOns;
+    }
+
+    public function prepareCakeAddOn(array $addOn, $prefix = false)
+    {
+        $addOnId = $addOn['addon_id'];
+
+        if (strlen($addOnId) > 4 && substr($addOnId, 0, 4) == 'Cake') {
+            $addOn['title'] = new \XenForo_Phrase(\Cake\Helper_String::pascalCaseToCamelCase($addOnId));
+            $addOn['depth'] = 1;
+            if ($prefix) {
+                $addOn['prefix'] = new \XenForo_Phrase('cake');
+            } else {
+                $addOn['title'] = new \XenForo_Phrase('cake_addon_title_x', array(
+                    'title' => $addOn['title']
+                ));
+            }
+        }
+
+        return $addOn;
     }
 
     public function getInstalledModulesForAddOn($addOnId)

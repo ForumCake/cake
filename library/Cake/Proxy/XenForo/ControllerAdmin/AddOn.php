@@ -17,9 +17,28 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
         $response = parent::actionIndex();
 
         if ($response instanceof \XenForo_ControllerResponse_View) {
-
             $response->params['addOns'] = $this->_getAddOnModel()->prepareCakeAddOns($response->params['addOns'], true,
                 true);
+        }
+
+        return $response;
+    }
+
+    public function actionEdit()
+    {
+        $response = parent::actionEdit();
+
+        if ($response instanceof \XenForo_ControllerResponse_View) {
+            $addOn = $response->params['addOn'];
+
+            $addOnId = $addOn['addon_id'];
+
+            if (strlen($addOnId) > 4 && substr($addOnId, 0, 4) == 'Cake') {
+                $response->params['masterTitle'] = new \XenForo_Phrase('cake_addon_title_x',
+                    array(
+                        'title' => new \XenForo_Phrase(\Cake\Helper_String::pascalCaseToCamelCase($addOnId))
+                    ));
+            }
         }
 
         return $response;
@@ -374,5 +393,18 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
 
         return $this->responseRedirect(\XenForo_ControllerResponse_Redirect::SUCCESS,
             \XenForo_Link::buildAdminLink('index'));
+    }
+
+    protected function _getAddOnOrError($addOnId)
+    {
+        $info = parent::_getAddOnOrError($addOnId);
+
+        $action = $this->_routeMatch->getAction();
+
+        if (strtolower($action) != 'edit') {
+            $info = $this->_getAddOnModel()->prepareCakeAddOn($info);
+        }
+
+        return $info;
     }
 }
