@@ -108,9 +108,9 @@
 			</xen:if>
 		</xen:foreach>
 	</ul>
-</xen:form>
 
-<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:number $moduleCount}</span>', 'total={xen:number $moduleCount}'}</p>]]></template>
+	<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:number $moduleCount}</span>', 'total={xen:number $moduleCount}'}</p>
+</xen:form>]]></template>
     <template title="cake_addon_modules_list_item"><![CDATA[<xen:if is="{$available}">
 	<xen:listitem id="{$id}"
 		label="{$module.title}"

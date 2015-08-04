@@ -62,6 +62,9 @@ class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
 
         $moduleCount = 0;
 
+        // fetches all the modules in one query for later
+        $addOnModel->getInstalledModulesForAddOns(array_keys($addOns));
+
         foreach ($addOns as $addOnId => $addOn) {
             $modules = $this->_getModulesForAddOn($addOn);
 

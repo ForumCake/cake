@@ -94,13 +94,47 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
             if ($prefix) {
                 $addOn['prefix'] = new \XenForo_Phrase('cake');
             } else {
-                $addOn['title'] = new \XenForo_Phrase('cake_addon_title_x', array(
-                    'title' => $addOn['title']
-                ));
+                $addOn['title'] = new \XenForo_Phrase('cake_addon_title_x',
+                    array(
+                        'title' => $addOn['title']
+                    ));
             }
         }
 
         return $addOn;
+    }
+
+    public function getInstalledModulesForAddOns(array $addOnIds)
+    {
+        $fetchAddOnIds = array();
+        foreach ($addOnIds as $addOnId) {
+            if (!isset($this->_installedModuleCache[$addOnId])) {
+                $fetchAddOnIds[] = $addOnId;
+            }
+        }
+        if ($fetchAddOnIds) {
+            $fetchedModules = $this->_getDb()->fetchAll(
+                '
+                    SELECT *
+                    FROM cake_module
+                    WHERE addon_id IN (' .
+                     $this->_getDb()
+                        ->quote($fetchAddOnIds) . ')
+                ');
+            foreach ($fetchAddOnIds as $addOnId) {
+                $this->_installedModuleCache[$addOnId] = array();
+            }
+            foreach ($fetchedModules as $module) {
+                $this->_installedModuleCache[$module['addon_id']][$module['module_name']] = $module;
+            }
+        }
+
+        $installedModules = array();
+        foreach ($addOnIds as $addOnId) {
+            $installedModules[$addOnId] = $this->_installedModuleCache[$addOnId];
+        }
+
+        return $installedModules;
     }
 
     public function getInstalledModulesForAddOn($addOnId)

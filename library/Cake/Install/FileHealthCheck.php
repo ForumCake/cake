@@ -7,7 +7,7 @@ class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
     public function getFileHashes()
     {
         return array(
-        	'library/Cake/addon-Cake.xml' => 'a1dc008f6b6ebf768494cea28fa3e224',
+        	'library/Cake/addon-Cake.xml' => '152c05ba0ad755e495428190b211b6b6',
         	'library/Cake/Admin.php' => 'acfcb19ec9fe6badaa909dc6f76bfa30',
         	'library/Cake/FileHealthCheck.php' => '3db917b3c3a6b0bddf5d51aebf5e08d8',
         	'library/Cake/Helper/Array.php' => '8faf05a03198ed9edf4b04d864d2c045',
@@ -24,12 +24,12 @@ class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
         	'library/Cake/Install/FileHealthCheckBase.php' => '845c8a49ee786e5c815cdf16c3a3de88',
         	'library/Cake/Option/DebugOnly.php' => '68d60ed60d61f67c3eda7492bb7e1c2d',
         	'library/Cake/Option/Explain.php' => 'ea5ddf0976ba072587e404fe1ad3b75c',
-        	'library/Cake/Proxy/XenForo/ControllerAdmin/AddOn.php' => 'd7988f44d78fa909f4819b12eafa11b4',
+        	'library/Cake/Proxy/XenForo/ControllerAdmin/AddOn.php' => 'fbc0ec312128ea6db98bcd1e86db2a45',
         	'library/Cake/Proxy/XenForo/ControllerAdmin/Option.php' => 'cbc5fd6d5132386af7377c20d63d3332',
         	'library/Cake/Proxy/XenForo/DataWriter/AddOn.php' => '0afff65b015619270735821c0e2c11d2',
         	'library/Cake/Proxy/XenForo/DataWriter/AdminTemplate.php' => 'abaa2a78d35f445674df1115bca87dc0',
         	'library/Cake/Proxy/XenForo/DataWriter/Template.php' => '3a95f636211687a7d3463f74db407b66',
-        	'library/Cake/Proxy/XenForo/Model/AddOn.php' => '9c8ba3b235dcc11ad1cbfa5e664dcb2c',
+        	'library/Cake/Proxy/XenForo/Model/AddOn.php' => '195e8d077163ac771ce46a6558ae66d0',
         	'library/Cake/Proxy/XenForo/Model/AdminNavigation.php' => 'ba497a97dcef960e659227395f449293',
         	'library/Cake/Proxy/XenForo/Model/AdminTemplate.php' => 'd392b02ee1f808352c04d62fb9d7fdba',
         	'library/Cake/Proxy/XenForo/Model/AdminTemplateModification.php' => 'd8f25e71861e857ddd7af5cd8e06437f',
