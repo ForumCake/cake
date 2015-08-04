@@ -1,7 +1,7 @@
 <?php
 namespace Cake;
 
-abstract class Install_DataAbstract
+abstract class Install_DataAbstract extends Install
 {
 
     public static $version = '';

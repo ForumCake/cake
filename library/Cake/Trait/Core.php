@@ -20,17 +20,24 @@ trait Trait_Core
         return $xenOptions->$option;
     }
 
+    protected function _addNamespaceToClass($class)
+    {
+        $calledClass = get_called_class();
+
+        $backslash = strrpos($calledClass, '\\');
+        if ($backslash !== false) {
+            $namespace = substr($calledClass, 0, $backslash);
+            return $namespace . '\\' . $class;
+        }
+
+        return $class;
+    }
+
     public function getModelFromCache($class)
     {
         if ((strpos($class, '\\') === false && strpos($class, '_') === false) ||
              (strlen($class) > 5 && substr($class, 6) == 'Model_')) {
-            $calledClass = get_called_class();
-
-            $backslash = strrpos($calledClass, '\\');
-            if ($backslash !== false) {
-                $namespace = substr($calledClass, 0, $backslash);
-                $class = $namespace . '\\' . $class;
-            }
+            $class = $this->_addNamespaceToClass($class);
         }
 
         return parent::getModelFromCache($class);
@@ -39,19 +46,13 @@ trait Trait_Core
     public function createDataWriter($class = 'DataWriter')
     {
         if (strpos($class, '_') === false || (strlen($class) > 10 && substr($class, 11) == 'DataWriter_')) {
-            $calledClass = get_called_class();
-
-            $backslash = strrpos($calledClass, '\\');
-            if ($backslash !== false) {
-                $namespace = substr($calledClass, 0, $backslash);
-                $class = $namespace . '\\' . $class;
-            }
+            $class = $this->_addNamespaceToClass($class);
         }
 
         return \XenForo_DataWriter::create($class);
     }
 
-    public function isModuleActive($module)
+    public function isModuleActive($module = null)
     {
         $calledClass = get_called_class();
 
@@ -69,7 +70,10 @@ trait Trait_Core
                     $addOnId = $_addOnId;
                     break;
                 }
-                array_pop($namespaceParts);
+                $pop = array_pop($namespaceParts);
+                if ($module === null) {
+                    $module = $pop;
+                }
             }
 
             if ($addOnId) {

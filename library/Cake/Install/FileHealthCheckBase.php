@@ -1,7 +1,7 @@
 <?php
 namespace Cake;
 
-class Install_FileHealthCheckBase
+class Install_FileHealthCheckBase extends Install
 {
 
     public function getFileHashes()

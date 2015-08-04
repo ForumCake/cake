@@ -1,7 +1,7 @@
 <?php
 namespace Cake;
 
-class Install_Controller
+class Install_Controller extends Install
 {
 
     /**

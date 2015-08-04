@@ -6,17 +6,16 @@ trait Trait_RoutePrefix
 
     use Trait_Core;
 
-    public function getRouteMatch(\XenForo_Router $router, $controllerName = '', $action = false, $majorSection = '', $minorSection = '')
+    public function getRouteMatch(\XenForo_Router $router, $controllerName = '', $action = false, $majorSection = '',
+        $minorSection = '')
     {
+        if (!$this->isModuleActive()) {
+            return;
+        }
+
         if (strpos($controllerName, '_') === false ||
              (strlen($controllerName) > 10 && substr($controllerName, 10) == 'Controller')) {
-            $calledClass = get_called_class();
-
-            $backslash = strrpos($calledClass, '\\');
-            if ($backslash !== false) {
-                $namespace = substr($calledClass, 0, $backslash);
-                $controllerName = $namespace . '\\' . $controllerName;
-            }
+            $controllerName = $this->_addNamespaceToClass($controllerName);
         }
 
         return $router->getRouteMatch($controllerName, $action, $majorSection, $minorSection);

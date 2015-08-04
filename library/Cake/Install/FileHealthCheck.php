@@ -1,7 +1,7 @@
 <?php
 namespace Cake;
 
-class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
+class Install_FileHealthCheck extends Install_FileHealthCheckBase
 {
     
     public function getFileHashes()
@@ -18,10 +18,11 @@ class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
         	'library/Cake/Helper/MySql.php' => '3dcbadb0bc027c22865ec7734274babb',
         	'library/Cake/Helper/String.php' => '10d9ec73793edaf8fc212e5bbe3b6526',
         	'library/Cake/Helper/Xml.php' => 'f3a2ac470c6ba1b9614422393cfebe73',
-        	'library/Cake/Install/Controller.php' => 'b84f9f95720dc4e3a0111537b13f1ac5',
+        	'library/Cake/Install/Controller.php' => '17dbcfb6429c9515f466f00f338602c8',
         	'library/Cake/Install/Data.php' => 'dcaaec834482cc49017f69e535549dc4',
-        	'library/Cake/Install/DataAbstract.php' => 'cf99b38229daa3f8f3846651cb6a3450',
-        	'library/Cake/Install/FileHealthCheckBase.php' => '845c8a49ee786e5c815cdf16c3a3de88',
+        	'library/Cake/Install/DataAbstract.php' => '27f51d926985757c6ca3f303c2b41316',
+        	'library/Cake/Install/FileHealthCheckBase.php' => '9434e63988320d93b183ea961aebf495',
+        	'library/Cake/Install.php' => '25bf8e05be00c0e58ba2fb8ca35c1610',
         	'library/Cake/Option/DebugOnly.php' => '68d60ed60d61f67c3eda7492bb7e1c2d',
         	'library/Cake/Option/Explain.php' => 'ea5ddf0976ba072587e404fe1ad3b75c',
         	'library/Cake/Proxy/XenForo/ControllerAdmin/AddOn.php' => 'fbc0ec312128ea6db98bcd1e86db2a45',
@@ -45,9 +46,9 @@ class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
         	'library/Cake/Template/Compiler/Trait.php' => 'dfa5a3ec95965b702203de6e9f5e957b',
         	'library/Cake/Template/Compiler.php' => '758786bbb25a141bf8c73ac88cbafc14',
         	'library/Cake/Template.php' => 'c8b7b356fe371f5b118ce4a2fc9b6445',
-        	'library/Cake/Trait/Controller.php' => '11235acd2d475b8ead19340ad2098109',
-        	'library/Cake/Trait/Core.php' => 'f46aeed8f1cdc052955f71d6c5e5da8f',
-        	'library/Cake/Trait/RoutePrefix.php' => '283f5a957ba57edeeccfabf766e50ea9',
+        	'library/Cake/Trait/Controller.php' => '806b2290fc9d16c5ef7c9d4eb7515ed5',
+        	'library/Cake/Trait/Core.php' => 'a026a09573f8f962077344cf925c231a',
+        	'library/Cake/Trait/RoutePrefix.php' => 'a12cc6e3d0d98fcd7a0250edf48a9047',
         	'js/cake/index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
         	'styles/default/cake/index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
         );
