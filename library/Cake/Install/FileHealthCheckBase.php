@@ -6,7 +6,11 @@ class Install_FileHealthCheckBase
 
     public function getFileHashes()
     {
-        return array();
+        $class = get_called_class();
+
+        return array(
+            $class => ''
+        );
     }
 
     /**
@@ -19,9 +23,16 @@ class Install_FileHealthCheckBase
      */
     public static function create($class)
     {
-        $createClass = \XenForo_Application::resolveDynamicClass($class, '', 'Cake\Install_FileHealthCheckBase');
+        // TODO add $fakeBase support
+        $createClass = \XenForo_Application::resolveDynamicClass($class, '');
         if (!$createClass) {
-            $createClass = 'Cake\Install_FileHealthCheckBase';
+            $createClass = '\\' . $class;
+            $nsSplit = strrpos($class, '\\');
+            $ns = substr($class, 0, $nsSplit);
+            $namespaceEval = "namespace $ns; ";
+            $class = substr($class, $nsSplit + 1);
+
+            eval($namespaceEval . 'class ' . $class . ' extends \Cake\Install_FileHealthCheckBase {}');
         }
 
         return new $createClass();

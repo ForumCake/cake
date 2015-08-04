@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="Cake" title="Cake" version_string="1.0.0 Alpha 10" version_id="1000039" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="Cake\Install_Controller" uninstall_callback_method="uninstall">
+<addon addon_id="Cake" title="Cake" version_string="1.0.0 Alpha 11" version_id="1000040" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="Cake\Install_Controller" uninstall_callback_method="uninstall">
   <admin_navigation>
     <navigation navigation_id="addOnModules" parent_navigation_id="addOns" display_order="15" link="add-ons/modules" admin_permission_id="addOn" debug_only="0" hide_no_children="0"/>
   </admin_navigation>
@@ -360,6 +360,7 @@ ${0}]]></replace>
     <phrase title="cake_confirm_uninstallation_of_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Confirm Uninstallation of Module]]></phrase>
     <phrase title="cake_install" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Install]]></phrase>
     <phrase title="cake_installed_modules" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Installed Modules]]></phrase>
+    <phrase title="cake_install_data_is_missing" version_id="1000040" version_string="1.0.0 Alpha 11"><![CDATA[Install data is missing]]></phrase>
     <phrase title="cake_install_module" version_id="1000032" version_string="1.0.0 Alpha 3"><![CDATA[Install Module]]></phrase>
     <phrase title="cake_it_is_not_possible_to_uninstall_the_only_installed_module" version_id="1000034" version_string="1.0.0 Alpha 5"><![CDATA[It is not possible to uninstall the only installed module. Please install another module first or uninstall the add-on.]]></phrase>
     <phrase title="cake_module" version_id="1000037" version_string="1.0.0 Alpha 8"><![CDATA[Module]]></phrase>

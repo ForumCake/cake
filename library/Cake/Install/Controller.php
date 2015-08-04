@@ -129,42 +129,44 @@ class Install_Controller
 
         $installData = Install_DataAbstract::create($namespace . '\Install_Data');
 
-        if ($installData) {
-            $addOnNamespace = str_replace('_', '\\', $addOnId);
-            $moduleName = substr($namespace, strlen($addOnNamespace) + 1);
+        if (!$installData) {
+            throw new \XenForo_Exception(new \XenForo_Phrase('cake_install_data_is_missing'), true);
+        }
 
-            if ($moduleName) {
-                $installData->preInstall(false);
+        $addOnNamespace = str_replace('_', '\\', $addOnId);
+        $moduleName = substr($namespace, strlen($addOnNamespace) + 1);
 
-                $installData->install();
+        if ($moduleName) {
+            $installData->preInstall(false);
 
-                $installData->installModule($addOnId, $moduleName);
-            } else {
-                // TODO allow modules inside modules?
+            $installData->install();
 
-                $installData->preInstall();
+            $installData->installModule($addOnId, $moduleName);
+        } else {
+            // TODO allow modules inside modules?
 
-                if ($existingAddOn && method_exists($addOnModel, 'getInstalledModulesForAddOn')) {
-                    $installedModules = $addOnModel->getInstalledModulesForAddOn($addOnId);
-                }
+            $installData->preInstall();
 
-                $modules = $installData->getModules();
+            if ($existingAddOn && method_exists($addOnModel, 'getInstalledModulesForAddOn')) {
+                $installedModules = $addOnModel->getInstalledModulesForAddOn($addOnId);
+            }
 
-                if (!$modules && $addOnId != 'Cake') {
-                    throw new \XenForo_Exception(new \XenForo_Phrase('cake_you_must_upload_at_least_one_module'), true);
-                }
+            $modules = $installData->getModules();
 
-                $installData->install();
+            if (!$modules && $addOnId != 'Cake') {
+                throw new \XenForo_Exception(new \XenForo_Phrase('cake_you_must_upload_at_least_one_module'), true);
+            }
 
-                foreach ($modules as $moduleName => $enabled) {
-                    if ($existingAddOn) {
-                        if (!isset($installedModules[$moduleName])) {
-                            continue;
-                        }
+            $installData->install();
+
+            foreach ($modules as $moduleName => $enabled) {
+                if ($existingAddOn) {
+                    if (!isset($installedModules[$moduleName])) {
+                        continue;
                     }
-                    if ($enabled) {
-                        self::_install($namespace . '\\' . $moduleName, $existingAddOn, $addOnData, $xml);
-                    }
+                }
+                if ($enabled) {
+                    self::_install($namespace . '\\' . $moduleName, $existingAddOn, $addOnData, $xml);
                 }
             }
         }

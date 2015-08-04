@@ -7,7 +7,7 @@ class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
     public function getFileHashes()
     {
         return array(
-        	'library/Cake/addon-Cake.xml' => '594051cd6a4d805edec1be3f45c12d11',
+        	'library/Cake/addon-Cake.xml' => '4db8ebbcce66db0421b62be1fac4b35e',
         	'library/Cake/Admin.php' => 'acfcb19ec9fe6badaa909dc6f76bfa30',
         	'library/Cake/FileHealthCheck.php' => '3db917b3c3a6b0bddf5d51aebf5e08d8',
         	'library/Cake/Helper/Array.php' => '8faf05a03198ed9edf4b04d864d2c045',
@@ -18,10 +18,10 @@ class Install_FileHealthCheck extends \Cake\Install_FileHealthCheckBase
         	'library/Cake/Helper/MySql.php' => '3dcbadb0bc027c22865ec7734274babb',
         	'library/Cake/Helper/String.php' => '10d9ec73793edaf8fc212e5bbe3b6526',
         	'library/Cake/Helper/Xml.php' => 'f3a2ac470c6ba1b9614422393cfebe73',
-        	'library/Cake/Install/Controller.php' => '3f2ded56e005d329c9b662377f04277c',
+        	'library/Cake/Install/Controller.php' => 'b84f9f95720dc4e3a0111537b13f1ac5',
         	'library/Cake/Install/Data.php' => 'dcaaec834482cc49017f69e535549dc4',
         	'library/Cake/Install/DataAbstract.php' => 'cf99b38229daa3f8f3846651cb6a3450',
-        	'library/Cake/Install/FileHealthCheckBase.php' => '457e1e6429b79dfc170a3ef2df87e55f',
+        	'library/Cake/Install/FileHealthCheckBase.php' => '845c8a49ee786e5c815cdf16c3a3de88',
         	'library/Cake/Option/DebugOnly.php' => '68d60ed60d61f67c3eda7492bb7e1c2d',
         	'library/Cake/Option/Explain.php' => 'ea5ddf0976ba072587e404fe1ad3b75c',
         	'library/Cake/Proxy/XenForo/ControllerAdmin/AddOn.php' => 'ecdf8714156f0301724da34242b1006a',
