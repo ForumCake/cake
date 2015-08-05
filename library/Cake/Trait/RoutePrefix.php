@@ -14,7 +14,7 @@ trait Trait_RoutePrefix
         }
 
         if (strpos($controllerName, '_') === false ||
-             (strlen($controllerName) > 10 && substr($controllerName, 10) == 'Controller')) {
+             (strlen($controllerName) > 10 && substr($controllerName, 0, 10) == 'Controller')) {
             $controllerName = $this->_addNamespaceToClass($controllerName);
         }
 
