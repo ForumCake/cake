@@ -24,6 +24,11 @@ trait Trait_Core
     {
         $calledClass = get_called_class();
 
+        $proxy = strrpos($calledClass, '\Proxy');
+        if ($proxy) {
+            $calledClass = substr($calledClass, $proxy + 7);
+        }
+
         $backslash = strrpos($calledClass, '\\');
         if ($backslash !== false) {
             $namespace = substr($calledClass, 0, $backslash);
