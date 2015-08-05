@@ -47,7 +47,7 @@ class Install_FileHealthCheck extends Install_FileHealthCheckBase
         	'library/Cake/Template/Compiler.php' => '758786bbb25a141bf8c73ac88cbafc14',
         	'library/Cake/Template.php' => 'c8b7b356fe371f5b118ce4a2fc9b6445',
         	'library/Cake/Trait/Controller.php' => '806b2290fc9d16c5ef7c9d4eb7515ed5',
-        	'library/Cake/Trait/Core.php' => 'a026a09573f8f962077344cf925c231a',
+        	'library/Cake/Trait/Core.php' => '1bc527ffcf6ab60c151d455abae70212',
         	'library/Cake/Trait/RoutePrefix.php' => 'b7d3bb10063b3b449868912d45b5a60d',
         	'js/cake/index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
         	'styles/default/cake/index.html' => 'd41d8cd98f00b204e9800998ecf8427e',

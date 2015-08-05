@@ -45,7 +45,7 @@ trait Trait_Core
 
     public function createDataWriter($class = 'DataWriter')
     {
-        if (strpos($class, '_') === false || (strlen($class) > 10 && substr($class, 11) == 'DataWriter_')) {
+        if (strpos($class, '_') === false || (strlen($class) > 10 && substr($class, 0, 11) == 'DataWriter_')) {
             $class = $this->_addNamespaceToClass($class);
         }
 
