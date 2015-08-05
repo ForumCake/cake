@@ -36,7 +36,7 @@ trait Trait_Core
     public function getModelFromCache($class)
     {
         if ((strpos($class, '\\') === false && strpos($class, '_') === false) ||
-             (strlen($class) > 5 && substr($class, 6) == 'Model_')) {
+             (strlen($class) > 5 && substr($class, 0, 6) == 'Model_')) {
             $class = $this->_addNamespaceToClass($class);
         }
 
