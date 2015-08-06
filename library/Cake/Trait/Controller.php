@@ -11,13 +11,7 @@ trait Trait_Controller
     {
         if (strpos($dataWriterName, '_') === false ||
              (strlen($dataWriterName) > 10 && substr($dataWriterName, 0, 11) == 'DataWriter_')) {
-            $calledClass = get_called_class();
-
-            $backslash = strrpos($calledClass, '\\');
-            if ($backslash !== false) {
-                $namespace = substr($calledClass, 0, $backslash);
-                $dataWriterName = $namespace . '\\' . $dataWriterName;
-            }
+            $dataWriterName = $this->_addNamespaceToClass($dataWriterName);
         }
 
         return parent::_deleteData($dataWriterName, $existingDataKeyName, $redirectLink, $redirectMessage, $dwOptions);
@@ -26,13 +20,7 @@ trait Trait_Controller
     protected function _getToggleResponse(array $items, $dwName, $redirectTarget, $activeFieldName = 'active', $idPrefix = '')
     {
         if (strpos($dwName, '_') === false || (strlen($dwName) > 10 && substr($dwName, 0, 11) == 'DataWriter_')) {
-            $calledClass = get_called_class();
-
-            $backslash = strrpos($calledClass, '\\');
-            if ($backslash !== false) {
-                $namespace = substr($calledClass, 0, $backslash);
-                $dwName = $namespace . '\\' . $dwName;
-            }
+            $dwName = $this->_addNamespaceToClass($dwName);
         }
 
         return parent::_getToggleResponse($items, $dwName, $redirectTarget, $activeFieldName, $idPrefix);
@@ -41,13 +29,7 @@ trait Trait_Controller
     public function getHelper($class)
     {
         if (strpos($class, '_') === false || (strlen($class) > 4 && substr($class, 0, 16) == 'ControllerHelper')) {
-            $calledClass = get_called_class();
-
-            $backslash = strrpos($calledClass, '\\');
-            if ($backslash !== false) {
-                $namespace = substr($calledClass, 0, $backslash);
-                $class = $namespace . '\\' . $class;
-            }
+            $class = $this->_addNamespaceToClass($class);
         }
 
         $class = \XenForo_Application::resolveDynamicClass($class);
@@ -58,13 +40,7 @@ trait Trait_Controller
     public function responseView($viewName = '', $templateName = '', array $params = array(), array $containerParams = array())
     {
         if (strpos($viewName, '_') === false || (strlen($viewName) > 4 && substr($viewName, 0, 4) == 'View')) {
-            $calledClass = get_called_class();
-
-            $backslash = strrpos($calledClass, '\\');
-            if ($backslash !== false) {
-                $namespace = substr($calledClass, 0, $backslash);
-                $viewName = $namespace . '\\' . $viewName;
-            }
+            $viewName = $this->_addNamespaceToClass($viewName);
         }
 
         return parent::responseView($viewName, $templateName, $params, $containerParams);
@@ -74,13 +50,7 @@ trait Trait_Controller
     {
         if (strpos($controllerName, '_') === false ||
              (strlen($controllerName) > 10 && substr($controllerName, 0, 10) == 'Controller')) {
-            $calledClass = get_called_class();
-
-            $backslash = strrpos($calledClass, '\\');
-            if ($backslash !== false) {
-                $namespace = substr($calledClass, 0, $backslash);
-                $controllerName = $namespace . '\\' . $controllerName;
-            }
+            $controllerName = $this->_addNamespaceToClass($controllerName);
         }
 
         return parent::responseReroute($controllerName, $action, $containerParams);
