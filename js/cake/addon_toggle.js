@@ -1,0 +1,2 @@
+!function(a,d,e,f){"undefined"===typeof Cake&&(Cake={});Cake.AddOnToggle=function(c){$input=c.find("input[type=checkbox]");$input.click(function(){var b=!1;$input.each(function(){"[Cake]"==a(this).attr("name").substring(2,8)&&(a(this).attr("checked")||(b=!0))});$input.each(function(){"[Cake_"==a(this).attr("name").substring(2,8)&&(b?(a(this).attr("disabled","disabled").addClass("disabled"),a(this).attr("checked",!1)):a(this).removeAttr("disabled").removeClass("disabled"))})})};XenForo.register(".CakeAddOnToggle",
+"Cake.AddOnToggle")}(jQuery,this,document);

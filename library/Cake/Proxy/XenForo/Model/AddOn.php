@@ -166,8 +166,6 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
 
         $addOnId = $addOn['addon_id'];
 
-        \XenForo_Db::beginTransaction($db);
-
         $libraryDir = \XenForo_Autoloader::getInstance()->getRootDir() . DIRECTORY_SEPARATOR;
         $libraryDir .= str_replace('_', DIRECTORY_SEPARATOR, $addOnId) . DIRECTORY_SEPARATOR;
 
@@ -189,12 +187,18 @@ class XenForo_Model_AddOn extends XFCP_XenForo_Model_AddOn
 
             $installData = \Cake\Install_DataAbstract::createForModule($addOnId, $moduleName);
 
+            $installData->preInstall();
+
+            \XenForo_Db::beginTransaction($db);
+
             $installData->install();
 
-            $installData->installModule($addOnId, $moduleName);
-        }
+            \XenForo_Db::commit($db);
 
-        \XenForo_Db::commit($db);
+            $installData->installModule($addOnId, $moduleName);
+
+            $installData->postInstall();
+        }
 
         if ($rebuildAddOnCaches) {
             $this->rebuildAddOnCaches();

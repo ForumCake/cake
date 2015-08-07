@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="Cake" title="Cake" version_string="1.0.0 Alpha 11" version_id="1000040" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="Cake\Install_Controller" uninstall_callback_method="uninstall">
+<addon addon_id="Cake" title="Cake" version_string="1.0.0 Beta 1" version_id="1000050" url="https://forumcake.com/" install_callback_class="Cake\Install_Controller" install_callback_method="install" uninstall_callback_class="Cake\Install_Controller" uninstall_callback_method="uninstall">
   <admin_navigation>
     <navigation navigation_id="addOnModules" parent_navigation_id="addOns" display_order="15" link="add-ons/modules" admin_permission_id="addOn" debug_only="0" hide_no_children="0"/>
   </admin_navigation>
@@ -296,15 +296,16 @@
       <replace><![CDATA[${1}{$masterTitle}${2}]]></replace>
     </modification>
     <modification template="addon_list" modification_key="cake_addonList" description="" execution_order="10" enabled="1" action="preg_replace">
-      <find><![CDATA[#(^.*<xen:listitem.*label=")([^\s]*")(.*>\s*<xen:popup.*>)(.*)(</xen:popup>)#Us]]></find>
+      <find><![CDATA[#(<xen:form action="{xen:adminlink add-ons/toggle}" class=".*)(">.*<xen:listitem.*label=")([^\s]*")(.*>\s*<xen:popup.*>)(.*)(</xen:popup>)#Us]]></find>
       <replace><![CDATA[<xen:require css="cake_addon_list.css" />
+<xen:require js="js/cake/addon_toggle.js" />
 <xen:set var="$forumCakePrefix"><span class="prefix forumCakePrefix"></xen:set>
-${1}{xen:if {$addOn.prefix}, '{xen:raw $forumCakePrefix}{$addOn.prefix}</span>'} ${2}
-					class="_depth{$addOn.depth}"${3}
+${1} CakeAddOnToggle${2}{xen:if {$addOn.prefix}, '{xen:raw $forumCakePrefix}{$addOn.prefix}</span>'} ${3}
+					class="_depth{$addOn.depth}"${4}
 <xen:link href="{xen:adminlink 'add-ons/modules', $addOn}" displayif="{$addOn.moduleCount}">{xen:phrase cake_modules} ({$addOn.moduleCount})</xen:link>
-${4}
+${5}
 <xen:link href="{xen:adminlink 'add-ons/modules/rebuild', $addOn}" displayif="{$addOn.moduleCount}">{xen:phrase cake_rebuild}</xen:link>
-${5}]]></replace>
+${6}]]></replace>
     </modification>
     <modification template="content_header" modification_key="cake_contentHeader" description="" execution_order="10" enabled="1" action="preg_replace">
       <find><![CDATA[#^#]]></find>
@@ -320,11 +321,17 @@ ${5}]]></replace>
       <replace><![CDATA[<xen:include template="cake_option_list" />
 ${0}]]></replace>
     </modification>
+    <modification template="sidebar_installed_addons" modification_key="cake_sidebarInstalledAddons" description="" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen:form action="{xen:adminlink add-ons/toggle}" class=".*)(">)#Us]]></find>
+      <replace><![CDATA[<xen:require js="js/cake/addon_toggle.js" />
+${1} CakeAddOnToggle${2}]]></replace>
+    </modification>
   </admin_template_modifications>
   <code_events/>
   <code_event_listeners>
     <listener event_id="container_admin_params" execute_order="10" callback_class="Cake\Admin" callback_method="containerAdminParams" active="1" hint="" description=""/>
     <listener event_id="file_health_check" execute_order="10" callback_class="Cake\FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="Cake\Proxy" callback_method="dependencies" active="1" hint="" description=""/>
     <listener event_id="load_class" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_Template_Compiler_Admin" description=""/>
     <listener event_id="load_class_controller" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_ControllerAdmin_AddOn" description=""/>
     <listener event_id="load_class_controller" execute_order="10" callback_class="Cake\Proxy" callback_method="loadClass" active="1" hint="XenForo_ControllerAdmin_Option" description=""/>

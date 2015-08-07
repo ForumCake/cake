@@ -12,6 +12,13 @@ if (false) {
 class XenForo_ControllerAdmin_AddOn extends XFCP_XenForo_ControllerAdmin_AddOn
 {
 
+    protected function _preDispatch($action)
+    {
+        parent::_preDispatch($action);
+
+        \Cake\Helper_Controller::setController('XenForo_ControllerPublic_AddOn', $this);
+    }
+
     public function actionIndex()
     {
         $response = parent::actionIndex();

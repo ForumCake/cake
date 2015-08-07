@@ -99,19 +99,31 @@ abstract class Install_DataAbstract extends Install
 
     public function preInstall($fileHealthCheck = true)
     {
-        if ($fileHealthCheck) {
+        if (!\XenForo_Application::debugMode() && $fileHealthCheck) {
             $hashes = array();
             FileHealthCheck::getFileHashes($hashes);
 
             $errors = \XenForo_Helper_Hash::compareHashes($hashes);
 
             if ($errors) {
-                $error = new \XenForo_Phrase('cake_uploaded_files_do_not_contain_expected_contents');
-                $error = $error->render(false);
-                if (!$error) {
-                    $error = 'Uploaded files do not contain expected contents.';
+                $controller = \Cake\Helper_Controller::getController('XenForo_ControllerPublic_AddOn');
+
+                if ($controller) {
+                    $viewParams = array(
+                        'errors' => $errors,
+                        'hashes' => $hashes
+                    );
+
+                    throw new \XenForo_ControllerResponse_Exception(
+                        $controller->responseView('XenForo_ViewAdmin_Tools_FileCheck', 'tools_file_check', $viewParams));
+                } else {
+                    $error = new \XenForo_Phrase('cake_uploaded_files_do_not_contain_expected_contents');
+                    $error = $error->render(false);
+                    if (!$error) {
+                        $error = 'Uploaded files do not contain expected contents.';
+                    }
+                    throw new \XenForo_Exception($error, true);
                 }
-                throw new \XenForo_Exception($error, true);
             }
         }
 
@@ -163,19 +175,31 @@ abstract class Install_DataAbstract extends Install
 
     public function preUninstall($fileHealthCheck = true)
     {
-        if ($fileHealthCheck) {
+        if (!\XenForo_Application::debugMode() && $fileHealthCheck) {
             $hashes = array();
             FileHealthCheck::getFileHashes($hashes);
 
             $errors = \XenForo_Helper_Hash::compareHashes($hashes);
 
             if ($errors) {
-                $error = new \XenForo_Phrase('cake_uploaded_files_do_not_contain_expected_contents');
-                $error = $error->render(false);
-                if (!$error) {
-                    $error = 'Uploaded files do not contain expected contents.';
+                $controller = \Cake\Helper_Controller::getController('XenForo_ControllerPublic_AddOn');
+
+                if ($controller) {
+                    $viewParams = array(
+                        'errors' => $errors,
+                        'hashes' => $hashes
+                    );
+
+                    throw new \XenForo_ControllerResponse_Exception(
+                        $controller->responseView('XenForo_ViewAdmin_Tools_FileCheck', 'tools_file_check', $viewParams));
+                } else {
+                    $error = new \XenForo_Phrase('cake_uploaded_files_do_not_contain_expected_contents');
+                    $error = $error->render(false);
+                    if (!$error) {
+                        $error = 'Uploaded files do not contain expected contents.';
+                    }
+                    throw new \XenForo_Exception($error, true);
                 }
-                throw new \XenForo_Exception($error, true);
             }
         }
 
