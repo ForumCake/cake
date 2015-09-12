@@ -157,6 +157,79 @@ class Helper_MySql
         }
     }
 
+    public static function getExistingKeys($tableName)
+    {
+        $db = \XenForo_Application::getDb();
+
+        $keys = array();
+        if (self::isTableExists($tableName)) {
+            $columns = $db->describeTable($tableName);
+            $indexes = $db->fetchAll('SHOW INDEXES FROM  `' . $tableName . '`');
+            foreach ($indexes as $index) {
+                if (!isset($keys[$index['Key_name']])) {
+                    $keys[$index['Key_name']] = $index;
+                }
+                $keys[$index['Key_name']]['Column_names'][] = $index['Column_name'];
+            }
+        }
+        return $keys;
+    }
+
+    public static function addKeys(array $keys, $unique = false, $fullText = false)
+    {
+        $db = \XenForo_Application::getDb();
+
+        $index = $unique ? 'UNIQUE' : 'INDEX';
+        if ($fullText) {
+            $index = 'FULLTEXT ' . $index;
+        }
+
+        foreach ($keys as $tableName => $key) {
+            $oldKeys = self::getExistingKeys($tableName);
+            foreach ($key as $keyName => $keyColumns) {
+                if (isset($oldKeys[$keyName])) {
+                    $keyDiff = array_diff($oldKeys[$keyName]['Column_names'], $keyColumns);
+                    if ($keyDiff) {
+                        $db->query(
+                            '
+                                ALTER TABLE `' . $tableName . '`
+                                DROP INDEX `' . $keyName . '`,
+                                ADD ' . $index . '
+                                    `' . $keyName . '`
+                                    (' . implode(',', $keyColumns) . ')
+                            ');
+                    }
+                } else {
+                    $db->query(
+                        '
+                            ALTER TABLE `' . $tableName . '`
+                            ADD ' . $index . '
+                                `' . $keyName . '`
+                                (' . implode(',', $keyColumns) . ')
+                        ');
+                }
+            }
+        }
+    }
+
+    public static function dropKeys(array $keys)
+    {
+        $db = \XenForo_Application::getDb();
+
+        foreach ($keys as $tableName => $key) {
+            $oldKeys = self::getExistingKeys($tableName);
+            foreach ($key as $keyName => $keyColumns) {
+                if (isset($oldKeys[$keyName])) {
+                    $db->query(
+                        '
+                            ALTER TABLE `' . $tableName . '`
+                            DROP INDEX `' . $keyName . '`
+                        ');
+                }
+            }
+        }
+    }
+
     public static function isTableExists($tableName)
     {
         $db = \XenForo_Application::getDb();
