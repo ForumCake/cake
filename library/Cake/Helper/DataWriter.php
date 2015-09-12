@@ -32,7 +32,7 @@ class Helper_DataWriter
                 $filterData = self::getFilterDataForField($dw, $variableName);
             }
             $input = $cakeInput->filterSingle($variableName, $filterData, $options);
-            $inputShown = $cakeInput->filterSingle($variableName . '_shown', \XenForo_Input::BOOLEAN, $options);
+            $inputShown = $cakeInput->filterSingle($variableName . '_shown', \XenForo_Input::BOOLEAN);
 
             if ($inputShown) {
                 $dw->set($variableName, $input);
