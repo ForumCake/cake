@@ -15,6 +15,6 @@ class Application
         }
 
         return $copyright .
-             '<a href="https://forumcake.com" class="concealed">Add-ons by Cake <span>&copy;2015 Waindigo Ltd.</span></a>';
+             '<a href="https://forumcake.com" class="concealed">Add-ons by Cake <span>&copy;2015 Forum Cake Ltd.</span></a>';
     }
 }
