@@ -87,6 +87,34 @@ abstract class Install_DataAbstract extends Install
             \Cake\Helper_Mysql::addPrimaryKeys($primaryKeys);
         }
 
+        $keys = $this->getKeys();
+
+        if ($keys) {
+            \Cake\Helper_Mysql::addKeys($keys);
+        }
+
+        $uniqueKeys = $this->getUniqueKeys();
+
+        if ($uniqueKeys) {
+            \Cake\Helper_Mysql::addKeys($uniqueKeys, true);
+        }
+
+        $contentTypes = $this->getContentTypes();
+        $contentTypeFields = $this->getContentTypeFields();
+
+        if ($contentTypes || $contentTypeFields) {
+            $contentTypeModel = $this->getModelFromCache('XenForo_Model_ContentType');
+        }
+
+        if ($contentTypeFields) {
+            $rebuild = $contentTypes ? true : false;
+            $contentTypeModel->insertContentTypeFieldsCake($contentTypeFields, $rebuild);
+        }
+
+        if ($contentTypes) {
+            $contentTypeModel->insertContentTypesCake($contentTypes);
+        }
+
         $this->_install();
     }
 
@@ -161,6 +189,34 @@ abstract class Install_DataAbstract extends Install
 
         if ($tableChanges) {
             \Cake\Helper_MySql::undoTableChanges($tableChanges);
+        }
+
+        $keys = $this->getKeys();
+
+        if ($keys) {
+            \Cake\Helper_Mysql::dropKeys($keys);
+        }
+
+        $uniqueKeys = $this->getUniqueKeys();
+
+        if ($uniqueKeys) {
+            \Cake\Helper_Mysql::dropKeys($uniqueKeys);
+        }
+
+        $contentTypes = $this->getContentTypes();
+        $contentTypeFields = $this->getContentTypeFields();
+
+        if ($contentTypes || $contentTypeFields) {
+            $contentTypeModel = $this->getModelFromCache('XenForo_Model_ContentType');
+        }
+
+        if ($contentTypeFields) {
+            $rebuild = $contentTypes ? true : false;
+            $contentTypeModel->deleteContentTypeFieldsCake($contentTypeFields, $rebuild);
+        }
+
+        if ($contentTypes) {
+            $contentTypeModel->deleteContentTypesCake($contentTypes);
         }
 
         $this->_uninstall();
@@ -270,6 +326,26 @@ abstract class Install_DataAbstract extends Install
     }
 
     public function getPrimaryKeys()
+    {
+        return array();
+    }
+
+    public function getUniqueKeys()
+    {
+        return array();
+    }
+
+    public function getKeys()
+    {
+        return array();
+    }
+
+    public function getContentTypes()
+    {
+        return array();
+    }
+
+    public function getContentTypeFields()
     {
         return array();
     }
