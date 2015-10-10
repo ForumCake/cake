@@ -13,7 +13,7 @@ trait XenForo_Model_TemplateModificationAbstract
                 $addOnId = $modification['addon_id'];
                 $modificationKey = $modification['modification_key'];
                 $modificationKey = \Cake\Helper_String::camelCaseToPascalCase($modificationKey);
-                if (strpos($modificationKey, $addOnId) !== false) {
+                if ($addOnId && strpos($modificationKey, $addOnId) !== false) {
                     $modificationKey = substr($modificationKey, strlen($addOnId) + 1);
                     $parts = explode('_', $modificationKey, 2);
                     if (count($parts) == 2) {

@@ -42,7 +42,7 @@ class Install_FileHealthCheck extends Install_FileHealthCheckBase
         	'library/Cake/Proxy/XenForo/Model/EmailTemplateModification.php' => '32901870caa4d600b799759984550b1e',
         	'library/Cake/Proxy/XenForo/Model/Template.php' => '3e416d61c632e4f1b14e0586a972341a',
         	'library/Cake/Proxy/XenForo/Model/TemplateModification.php' => '95c13696833ec50895e20dfc0f9a8cf9',
-        	'library/Cake/Proxy/XenForo/Model/TemplateModificationAbstract.php' => 'd611c634518a3d22295e05f8ba7f5ec5',
+        	'library/Cake/Proxy/XenForo/Model/TemplateModificationAbstract.php' => 'd0be3b1ccefa555e4be5b09d872ffc49',
         	'library/Cake/Proxy/XenForo/Route/PrefixAdmin/Options.php' => '1d86129f71d2d2d9a2a9b481a9a0d8a4',
         	'library/Cake/Proxy/XenForo/Template/Compiler/Admin.php' => 'f3081a8d68476eda8e0c2bf8bc23b514',
         	'library/Cake/Proxy.php' => '23610124f6ca5e6f0860de1d0a93b5b7',
